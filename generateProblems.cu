@@ -531,16 +531,17 @@ void generateKNormal (uint * kList, uint kListCount, uint vectorSize, curandGene
 
 
 void generateKCluster (uint * kList, uint kListCount, uint vectorSize, curandGenerator_t generator) {
-  float * randomFloats = (float *) malloc (sizeof (float) * kListCount / 9);
+  float * randomFloats = (float *) malloc (sizeof (float) * ( (kListCount / 9) + 1 ));
   float * d_randomFloats;
 
-  cudaMalloc (&d_randomFloats, sizeof (float) * kListCount / 9);
+  cudaMalloc (&d_randomFloats, sizeof (float) * ( (kListCount / 9) + 1 ));
   
-  curandGenerateUniform (generator, d_randomFloats, kListCount / 9);
+  curandGenerateUniform (generator, d_randomFloats, ( (kListCount / 9) + 1 ));
 
-  cudaMemcpy (randomFloats, d_randomFloats, kListCount * sizeof (float) / 9, cudaMemcpyDeviceToHost);
+  cudaMemcpy (randomFloats, d_randomFloats, sizeof (float) * ( (kListCount / 9) + 1 ), cudaMemcpyDeviceToHost);
 
   int floatIndex = 0;
+  int maxassigned=0;
   for (int i = 4; i < kListCount; i+=9) {
    
     kList[i] = (uint) (randomFloats[floatIndex++] * (vectorSize - 10) + 5);
@@ -549,8 +550,18 @@ void generateKCluster (uint * kList, uint kListCount, uint vectorSize, curandGen
       kList[i - j] = kList[i] - j;
       if ((i + j) < kListCount)
         kList[i + j] = kList[i] + j;
+        maxassigned = max(maxassigned,i+j);
     }
   }
+
+
+  // To ensure the full kList has appropriate assignments, we fill in the end of the Klist if needed.
+  if (maxassigned < kListCount-1){
+    kList[maxassigned+1] = (uint) (randomFloats[floatIndex++] * (vectorSize - 10) + 5);
+    for (int j = maxassigned+2; j<kListCount; j++){ 
+      kList[j] = min(kList[j-1]+1,vectorSize-1);
+    } // end for(j=maxassigned)
+  } // end if(maxassigned)
 
   cudaFree (d_randomFloats);
   free (randomFloats);
