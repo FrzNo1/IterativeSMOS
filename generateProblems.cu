@@ -1,4 +1,5 @@
-/* Copyright 2011 Russel Steinbach, Jeffrey Blanchard, Bradley Gordon,
+/* Copyright 2012 Jeffrey Blanchard, Erik Opavsky, and Emircan Uysaler
+ * Copyright 2011 Russel Steinbach, Jeffrey Blanchard, Bradley Gordon,
  *   and Toluwaloju Alabi
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -44,9 +45,13 @@ void generateSortedArrayUints(uint* input, uint length, curandGenerator_t gen)
 }
 
 void generateUniformZeroToFourUints (uint* input, uint length, curandGenerator_t gen) {
-
+  uint * d_generated;
+  cudaMalloc(&d_generated, length * sizeof(uint));
+  curandGenerate(gen, d_generated,length);
+  cudaMemcpy(input, d_generated, length * sizeof(uint), cudaMemcpyDeviceToHost);
+  cudaFree(d_generated);
   for (uint i = 0; i < length; i++)
-    input[i] = i % 4;
+    input[i] = i % 100;
 
 }
 
@@ -503,11 +508,13 @@ void generateKUniformRandom (uint * kList, uint kListCount, uint vectorSize, cur
   free (randomFloats);
 }
 
+// to properly use KUniform, you must request one extra order statistic since it always returns both min and max.
+// For the one percentile order statistics, request 101 Unfiorm order statistics to obtain 0,1,2,...99,100 percentiles.
 void generateKUniform (uint * kList, uint kListCount, uint vectorSize, curandGenerator_t generator) {
   kList[0] = 1;
 
-  for (uint i = 1; i < kListCount; i++)
-    kList[i] = (uint) ((i / (float) kListCount) * vectorSize);
+  for (uint i = 1; i < kListCount-1; i++)
+    kList[i] = (uint) ((i / (float) (kListCount-1)) * vectorSize);
 
   kList[kListCount - 1] = vectorSize;
 }

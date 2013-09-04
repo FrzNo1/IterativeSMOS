@@ -105,6 +105,22 @@ int compareMultiselectAlgorithms(uint size, uint * kList, uint kListCount, uint 
     //copy the vector to h_vec_copy, which will be used to restore it later
     memcpy(h_vec_copy, h_vec, size * sizeof(T));
 
+
+    // if the kdistribution is random, we need to generate new a kList for each new random problem instance.
+    unsigned long long seed2;
+    timeval t2;
+    if ( (kGenerateType != 1) && (i>0) ){
+      gettimeofday(&t2, NULL);
+      seed2 = t2.tv_usec * t2.tv_sec;
+      curandGenerator_t generator2;
+      srand(unsigned(time(NULL)));
+      curandCreateGenerator(&generator2, CURAND_RNG_PSEUDO_DEFAULT);
+      curandSetPseudoRandomGeneratorSeed(generator2,seed2);
+
+      arrayOfKDistributionGenerators[kGenerateType](kList, kListCount, size, generator2);
+    }
+    std::cout << "kList[0] = " << kList[0] << ", kList[1] = " << kList[1] << std::endl;
+
     winnerArray[i] = 0;
     float currentWinningTime = INFINITY;
 

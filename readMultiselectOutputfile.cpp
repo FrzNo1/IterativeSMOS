@@ -157,6 +157,8 @@ lineStruct** gatherTests(char* baseFileName,uint &numTests){
   std::set<char*> filesToLookAt;
   std::set<char*>::iterator it;
 
+std::cout << "base name is " << baseFileName << std::endl;
+
   if (dpdf != NULL){
     while (epdf = readdir(dpdf)){
       if(! (strncmp(epdf->d_name, baseFileName, strlen(baseFileName)))){
@@ -431,10 +433,16 @@ void printTestsSummary(uint numTests, lineStruct **tests, char *baseFileName){
   std::ofstream outFileStream;
   outFileStream.open(summaryFileName);
   outFileStream.close();
-  /*
+  
   outFileStream.open(overviewFileName);
   outFileStream.close();
-  */
+  
+  outFileStream.open(ratioSummaryFileName);
+  outFileStream.close();
+  
+  outFileStream.open(ratioOverviewFileName);
+  outFileStream.close();
+  
   //create sets one containing all of the  (n,k) pairs
   //another containing just the various valeus of n
   std::set<std::pair<uint,uint> > problemSizeKSet;
@@ -451,16 +459,16 @@ void printTestsSummary(uint numTests, lineStruct **tests, char *baseFileName){
   //for each element in the set of (n,k) pairs print out the information for that combination
   for(it = problemSizeKSet.begin(); it != problemSizeKSet.end();it++){
     printSizeKCombination((*it).first, (*it).second, tests,numTests, tests[0]->numAlgorithms,summaryFileName);
-    //printRatios((*it).first, (*it).second, tests,numTests, tests[0]->numAlgorithms,ratioSummaryFileName);
+    printRatios((*it).first, (*it).second, tests,numTests, tests[0]->numAlgorithms,ratioSummaryFileName);
   }
-  /*
+  
   //for each element in the set of sizes print out the information for that combination
   for(it2 = problemSizeSet.begin(); it2 != problemSizeSet.end(); it2++){
     printOverview((*it2), tests,numTests, tests[0]->numAlgorithms,overviewFileName);
     printRatioOverview((*it2), tests,numTests, tests[0]->numAlgorithms,ratioOverviewFileName);
 
   }
-  */
+  
 }
  
 

@@ -28,7 +28,14 @@ compareAlgorithms \
 compareMultiselect \
 analyzeMultiselect \
 realDataTests \
-compareTopkselect
+compareTopkselect 
+
+SMOS = \
+SMOStimingsOSDistrAll \
+SMOStimingsOSDistrUniform \
+SMOStimingsVectorGrowth \
+SMOStimingsTableData \
+SMOSanalyze 
 
 CompareAlgorithms = \
 compareAlgorithms.cu \
@@ -55,7 +62,35 @@ realDataTests.cu \
 bucketMultiselect.cu \
 generateProblems.cu 
 
+SMOStimingsOSDistrAll = \
+SMOStimingsOSDistrAll.cu \
+bucketMultiselect.cu \
+generateProblems.cu 
+
+SMOStimingsOSDistrUniform = \
+SMOStimingsOSDistrUniform.cu \
+bucketMultiselect.cu \
+generateProblems.cu 
+
+SMOStimingsVectorGrowth = \
+SMOStimingsVectorGrowth.cu \
+bucketMultiselect.cu \
+generateProblems.cu 
+
+SMOStimingsTableData = \
+SMOStimingsTableData.cu \
+bucketMultiselect.cu \
+generateProblems.cu 
+
+SMOSanalyze = \
+SMOSanalyze.cu \
+bucketMultiselect.cu \
+generateProblems.cu 
+
+
 all: $(PROGRAMS)
+
+allSMOS: $(SMOS)
 
 compareAlgorithms: $(CompareAlgorithms)
 	$(NVCC) -o $@ $(addsuffix .cu,$@) $(NVCCFLAGS)
@@ -72,6 +107,24 @@ analyzeMultiselect: $(AnalyzeMultiselect)
 realDataTests: $(RealDataTests)
 	$(NVCC) -o $@ $(addsuffix .cu,$@) $(NVCCFLAGS)
 
+SMOStimingsOSDistrAll: $(SMOStimingsOSDistrAll)
+	$(NVCC) -o $@ $(addsuffix .cu,$@) $(NVCCFLAGS)
+
+SMOStimingsVectorGrowth: $(SMOStimingsVectorGrowth)
+	$(NVCC) -o $@ $(addsuffix .cu,$@) $(NVCCFLAGS)
+
+SMOStimingsOSDistrUniform: $(SMOStimingsOSDistrUniform)
+	$(NVCC) -o $@ $(addsuffix .cu,$@) $(NVCCFLAGS)
+
+SMOStimingsTableData: $(SMOStimingsTableData)
+	$(NVCC) -o $@ $(addsuffix .cu,$@) $(NVCCFLAGS)
+
+SMOSanalyze: $(SMOSanalyze)
+	$(NVCC) -o $@ $(addsuffix .cu,$@) $(NVCCFLAGS)
+
+ProcessData: readMultiselectOutputfile.cpp
+	$(CXX) -o readMultiselectOutput readMultiselectOutputfile.cpp $(CXXFLAGS)
+ 
 %.c.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
@@ -83,6 +136,9 @@ realDataTests: $(RealDataTests)
 
 clean:
 	rm -rf $(PROGRAMS) *~ *.o
+
+cleanSMOS:
+	rm -rf $(SMOS) *~ *.o
 
 #compareAlgorithms: compareAlgorithms.cu bucketSelect.cu randomizedBucketSelect.cu
 #	$(NVCC) -o compareAlgorithms compareAlgorithms.cu $(NVCCFLAGS)

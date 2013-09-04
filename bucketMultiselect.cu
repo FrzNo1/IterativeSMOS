@@ -511,7 +511,7 @@ namespace BucketMultiselect{
 
   /// ***********************************************************
   /// ***********************************************************
-  /// **** PHASE ONE: REDUCING THE PROBLEM SIZE
+  /// **** bucketMultiSelect: the main algorithm
   /// ***********************************************************
   /// ***********************************************************
 
@@ -519,12 +519,13 @@ namespace BucketMultiselect{
      problem to a smaller problem by using bucketing ideas.
   */
   template <typename T>
-  T phaseOne (T* d_vector, int length, uint * kVals, int numKs, T * output, int blocks
+  T bucketMultiSelect (T* d_vector, int length, uint * kVals, int numKs, T * output, int blocks
               , int threads, int numBuckets, int numPivots) {    
 
     /// ***********************************************************
-    /// ****STEP 1: Find Min and Max of the whole vector
-    /// ****We don't need to go through the rest of the algorithm if it's flat
+    /// **** STEP 1: Initialization 
+    /// **** STEP 1.1: Find Min and Max of the whole vector
+    /// **** We don't need to go through the rest of the algorithm if it's flat
     /// ***********************************************************
     // timing(0, 1);
 
@@ -548,7 +549,8 @@ namespace BucketMultiselect{
 
     // timing(1, 1);
     /// ***********************************************************
-    /// ****STEP 2: Declare variables and allocate memory
+    /// **** STEP 1: Initialization 
+    /// **** STEP 1.2: Declare variables and allocate memory
     /// **** Declare Variables
     /// ***********************************************************
     // timing(0, 2);
@@ -607,7 +609,8 @@ namespace BucketMultiselect{
 
     // timing(1, 2);
     /// ***********************************************************
-    /// ****STEP 3: Sort the klist
+    /// **** STEP 1: Initialization 
+    /// **** STEP 1.3: Sort the klist
     /// and keep the old index
     /// ***********************************************************
     // timing(0, 3);
@@ -647,8 +650,8 @@ namespace BucketMultiselect{
 
     // timing(1, 3);
     /// ***********************************************************
-    /// ****STEP 4: Generate Pivots and Slopes
-    /// Declare slopes and pivots
+    /// **** STEP 2: CreateBuckets 
+    /// ****  Declare and Generate Pivots and Slopes
     /// ***********************************************************
     // timing(0, 4);
 
@@ -680,8 +683,8 @@ namespace BucketMultiselect{
 
     // timing(1, 4);
     /// ***********************************************************
-    /// ****STEP 5: Assign elements to buckets
-    /// 
+    /// **** STEP 3: AssignBuckets 
+    /// **** Using the function assignSmartBucket
     /// ***********************************************************
     // timing(0, 5);
 
@@ -692,14 +695,16 @@ namespace BucketMultiselect{
        d_elementToBucket, d_bucketCount, offset);
     // timing(1, 5);
 
+    /// ***********************************************************
+    /// **** STEP 4: IdentifyActiveBuckets 
+    /// **** Find the kth buckets
+    /// **** and update their respective indices
+    /// ***********************************************************
+    // timing(0, 6);
+
     sumCounts<<<numBuckets/threadsPerBlock, threadsPerBlock>>>(d_bucketCount, 
                                                                numBuckets, numBlocks);
 
-    /// ***********************************************************
-    /// ****STEP 6: Find the kth buckets
-    /// and update their respective indices
-    /// ***********************************************************
-    // timing(0, 6);
 
     findKBuckets(d_bucketCount, h_bucketCount, numBuckets, kVals, numKs, 
                  kthBucketScanner, kthBuckets, numBlocks);
@@ -757,8 +762,9 @@ namespace BucketMultiselect{
 
     // timing(1, 22);
     /// ***********************************************************
-    /// ****STEP 7: Copy the kth buckets
-    /// only unique ones
+    /// **** STEP 5: Reduce 
+    /// **** Copy the elements from the unique acitve buckets
+    /// **** to a new vector 
     /// ***********************************************************
     // timing(0, 8);
 
@@ -782,8 +788,10 @@ namespace BucketMultiselect{
     // timing(1, 9);
 
     /// ***********************************************************
-    /// ****STEP 8: Sort
-    /// and finito
+    /// **** STEP 6: sort&choose
+    /// **** Using thrust::sort on the reduced vector and the
+    /// **** updated indices of the order statistics, 
+    /// **** we solve the reduced problem.
     /// ***********************************************************
 
     //free all used memory
@@ -865,7 +873,7 @@ namespace BucketMultiselect{
       numBuckets = 4096;
     */
    
-    phaseOne (d_vector, length, kVals, numKs, outputs, blocks, threads, numBuckets, 17);
+    bucketMultiSelect (d_vector, length, kVals, numKs, outputs, blocks, threads, numBuckets, 17);
 
     return 1;
   }
