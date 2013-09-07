@@ -49,7 +49,7 @@ Gordon, and Steinbach.
  Selecting Multiple Order Statistics with a Graphics Processing Unit
  Jeffrey D. Blanchard, Erik Opavsky, and Emircan Uysaler
  Submitted, 2013.
- Online [Available]: www.math.grinnell.edu/~blanchaj/Research/SMOSGPU.pdf
+ Online [Available]: www.math.grinnell.edu/~blanchaj/Research/Research.html
 
  Any work which uses this algorithm, software, or derivatives of this 
  software should cite the above paper.
