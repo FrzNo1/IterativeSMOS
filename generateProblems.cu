@@ -73,12 +73,24 @@ void generateUniformFloats(float *h_vec, uint numElements, curandGenerator_t gen
 }
 
 void generateNormalFloats(float* h_vec, uint numElements, curandGenerator_t generator){
-  float *d_generated;
+  float *d_generated;  
+  uint undo=0;
+
+  if (numElements%2){
+    numElements++;
+    undo++;
+  }
+
   cudaMalloc(&d_generated, numElements * sizeof(float));
   curandGenerateNormal(generator, d_generated, numElements,0,1);
+
+  if (undo)
+    numElements--;
+
   cudaMemcpy(h_vec, d_generated, numElements * sizeof(float), cudaMemcpyDeviceToHost);
   cudaFree(d_generated);
 }
+
 __global__ void setAllToValue(float* input, int length, float value, int offset)
 {
   int idx = blockDim.x * blockIdx.x + threadIdx.x;
@@ -253,8 +265,14 @@ void generateCauchyFloats(float* input, uint length, curandGenerator_t gen){
 
 void generateNoisyVector(float* input, uint length, curandGenerator_t gen){
   float* devInput;
-  cudaMalloc(&devInput, sizeof(float)*length);
+  uint undo=0;
 
+  if (length%2){
+    length++;
+    undo++;
+  }
+
+  cudaMalloc(&devInput, sizeof(float)*length);
  
   curandGenerateNormal(gen, devInput, length, 0.0, 0.01);
 
@@ -273,6 +291,9 @@ void generateNoisyVector(float* input, uint length, curandGenerator_t gen){
   cudaMemcpy(devVec, hostVec, sizeof(float)*length, cudaMemcpyHostToDevice);
 
   vectorAdd<<<blocks, maxThreads>>>(devInput, devVec, length, offset);
+
+  if (undo)
+    length--;
 
   cudaMemcpy(input, devInput, sizeof(float)*length, cudaMemcpyDeviceToHost);
 
@@ -305,8 +326,19 @@ void generateHugeUniformFloats(float* input, uint length, curandGenerator_t gen)
 
 void generateNormalFloats100(float* input, uint length, curandGenerator_t gen){
   float* devInput;
+  uint undo=0;
+
+  if (length%2){
+    length++;
+    undo++;
+  }
+
   cudaMalloc(&devInput, sizeof(float) * length);
   curandGenerateNormal(gen, devInput, length, 0.0, 100.0);
+
+  if (undo)
+    length--;
+
   cudaMemcpy(input, devInput, sizeof(float)*length, cudaMemcpyDeviceToHost);
   cudaFree(devInput);
 }
@@ -326,9 +358,15 @@ __global__ void createAbsolute(float* input, int length, int offset){
 
 void generateHalfNormalFloats(float* input, uint length, curandGenerator_t gen){
   float* devInput;
+  uint undo=0;
+
+  if (length%2){
+    length++;
+    undo++;
+  }
+  
   cudaMalloc(&devInput, sizeof(float) * length);
 
-  
   curandGenerateNormal(gen, devInput, length, 0.0, 1.0);
 
   //get device properties
@@ -339,6 +377,9 @@ void generateHalfNormalFloats(float* input, uint length, curandGenerator_t gen){
   int offset = blocks * maxThreads;
 
   createAbsolute<<<blocks, maxThreads>>>(devInput, length, offset);
+
+  if (undo)
+    length--;
 
   cudaMemcpy(input, devInput, sizeof(float)*length, cudaMemcpyDeviceToHost);
 
@@ -397,8 +438,19 @@ void generateUniformDoubles(double *h_vec, uint numElements, curandGenerator_t g
 
 void generateNormalDoubles(double* h_vec, uint numElements, curandGenerator_t gen){
   double *d_generated;
+  uint undo=0;
+
+  if (numElements%2){
+    numElements++;
+    undo++;
+  }
+
   cudaMalloc(&d_generated, numElements * sizeof(double));
   curandGenerateNormalDouble(gen, d_generated, numElements,0,1);
+
+  if (undo)
+    numElements--;
+
   cudaMemcpy(h_vec, d_generated, numElements * sizeof(double), cudaMemcpyDeviceToHost);
   cudaFree(d_generated);
 }
@@ -522,10 +574,19 @@ void generateKUniform (uint * kList, uint kListCount, uint vectorSize, curandGen
 void generateKNormal (uint * kList, uint kListCount, uint vectorSize, curandGenerator_t generator) {
   float * randomFloats = (float *) malloc (sizeof (float) * kListCount);
   float * d_randomFloats;
+  uint undo=0;
+
+  if (kListCount%2){
+    kListCount++;
+    undo++;
+  }
 
   cudaMalloc (&d_randomFloats, sizeof (float) * kListCount);
   
   curandGenerateNormal (generator, d_randomFloats, kListCount, 0, 1);
+
+  if (undo)
+    kListCount--;
 
   cudaMemcpy (randomFloats, d_randomFloats, kListCount * sizeof (float), cudaMemcpyDeviceToHost);
 
