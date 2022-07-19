@@ -117,7 +117,7 @@ namespace NoExtremaRandomizedBucketSelect{
           sharedNumSmallBuckets = numBuckets / (numPivots-1);
       }
     }
-    syncthreads();
+    __syncthreads();
     
     //assigning elements to buckets and incrementing the bucket counts
     if(index < length) {
@@ -150,7 +150,7 @@ namespace NoExtremaRandomizedBucketSelect{
       }
     }
     
-    syncthreads();
+    __syncthreads();
 
     //reading bucket counts from shared memory back to global memory
     for (int i = 0; i < numBuckets / MAX_THREADS_PER_BLOCK; i++) 
@@ -181,7 +181,7 @@ namespace NoExtremaRandomizedBucketSelect{
       sharedSlope = slope;
     }
     
-    syncthreads();
+    __syncthreads();
     
     //assigning elements to buckets and incrementing the bucket counts
     if(index < length) {
@@ -196,7 +196,7 @@ namespace NoExtremaRandomizedBucketSelect{
       }
     }
         
-    syncthreads();
+    __syncthreads();
 
       if (threadIndex < numSmallBuckets)
         *(bucketCount + blockIdx.x * numBuckets + threadIndex) = *(sharedBuckets + threadIndex);
@@ -225,7 +225,7 @@ namespace NoExtremaRandomizedBucketSelect{
       lastBigBucketIndex = numBuckets - numSmallBuckets;
     }
     
-    syncthreads();
+    __syncthreads();
     
     //assigning elements to buckets and incrementing the bucket counts
     if(index < length) {
@@ -240,7 +240,7 @@ namespace NoExtremaRandomizedBucketSelect{
       }
     }
         
-    syncthreads();
+    __syncthreads();
 
       if (threadIndex < numSmallBuckets)
         *(bucketCount + blockIdx.x * numBuckets + lastBigBucketIndex + threadIndex) = *(sharedBuckets + threadIndex);
@@ -266,7 +266,7 @@ namespace NoExtremaRandomizedBucketSelect{
     for(int i=0; i < (bucketNumbers/1024); i++) 
       if(index < bucketNumbers) 
         sharedBuckets[i*1024+index] = 0;
-    syncthreads();
+    __syncthreads();
 
     //assigning elements to buckets and incrementing the bucket counts
     if(idx < length)    {
@@ -284,7 +284,7 @@ namespace NoExtremaRandomizedBucketSelect{
       }
     }
 
-    syncthreads();
+    __syncthreads();
 
     //reading bucket counts from shared memory back to global memory
     for(int i=0; i < (bucketNumbers/1024); i++) 
@@ -304,7 +304,7 @@ namespace NoExtremaRandomizedBucketSelect{
     if(index < bucketNumbers){
       sharedBuckets[index] =0;
     }
-    syncthreads();
+    __syncthreads();
 
     //assigning elements to buckets and incrementing the bucket counts
     if (idx < length){
@@ -329,7 +329,7 @@ namespace NoExtremaRandomizedBucketSelect{
       }
     }
 
-    syncthreads();
+    __syncthreads();
 
     //reading bucket counts from shared memory back to global memory
     if(index < bucketNumbers){
@@ -407,7 +407,7 @@ namespace NoExtremaRandomizedBucketSelect{
     if(threadIndex < 1) 
       sharedBucketCount = d_bucketCount[blockIdx.x * numTotalBuckets + bucket];
 
-    syncthreads();
+    __syncthreads();
     
     if(idx < length) {
       for(int i=idx; i<length; i+=offset) {

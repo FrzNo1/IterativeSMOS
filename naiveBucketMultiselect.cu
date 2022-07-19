@@ -86,7 +86,7 @@ namespace NaiveBucketMultiselect{
       if (threadIndex < numBuckets) 
         sharedBuckets[i * MAX_THREADS_PER_BLOCK + threadIndex] = 0;
 
-    syncthreads();
+    __syncthreads();
 
     //assigning elements to buckets and incrementing the bucket counts
     if (threadIndex < length)    {
@@ -106,7 +106,7 @@ namespace NaiveBucketMultiselect{
       }
     }
 
-    syncthreads();
+    __syncthreads();
 
     //reading bucket counts from shared memory back to global memory
     for (int i = 0; i < (numBuckets / MAX_THREADS_PER_BLOCK); i++) 
@@ -124,7 +124,7 @@ namespace NaiveBucketMultiselect{
     if (threadIdx.x < numBuckets)
       sharedBuckets[threadIdx.x] = buckets[threadIdx.x];
 
-    syncthreads();
+    __syncthreads();
 
     // variables for binary search
     int minBucketIndex;

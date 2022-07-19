@@ -10,9 +10,10 @@ NVCC := nvcc -ccbin /usr/bin
 # Includes
 INCLUDES = -I. -I$(CUDA_INSTALL_PATH)/include -I./lib/ 
 # Libraries
-LIB_CUDA := -L$(CUDA_INSTALL_PATH)/lib -lcurand -lm -lgsl -lgslcblas
+#LIB_CUDA := -L$(CUDA_INSTALL_PATH)/lib64 -lcurand -lm -lgsl -lgslcblas
+LIB_CUDA := -L$(CUDA_INSTALL_PATH)/lib64 -lcurand -lm 
 # ARCH
-ARCH = -arch=sm_20
+ARCH = -arch=sm_60
 
 # Common flags
  COMMONFLAGS += $(INCLUDES)

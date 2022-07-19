@@ -87,7 +87,7 @@ namespace BucketSelect{
     for(int i=0; i < (bucketNumbers/1024); i++) 
       if(index < bucketNumbers) 
         sharedBuckets[i*1024+index] = 0;
-    syncthreads();
+    __syncthreads();
 
     //assigning elements to buckets and incrementing the bucket counts
     if(idx < length)    {
@@ -105,7 +105,7 @@ namespace BucketSelect{
       }
     }
 
-    syncthreads();
+    __syncthreads();
 
     //reading bucket counts from shared memory back to global memory
     for(int i=0; i < (bucketNumbers/1024); i++) 
@@ -125,7 +125,7 @@ namespace BucketSelect{
     if(index < bucketNumbers){
       sharedBuckets[index] =0;
     }
-    syncthreads();
+    __syncthreads();
 
     //assigning elements to buckets and incrementing the bucket counts
     if (idx < length){
@@ -150,7 +150,7 @@ namespace BucketSelect{
       }
     }
 
-    syncthreads();
+    __syncthreads();
 
     //reading bucket counts from shared memory back to global memory
     if(index < bucketNumbers){

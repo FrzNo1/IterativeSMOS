@@ -230,7 +230,7 @@ namespace CompareMultiselect {
   template<typename T>
   void runTests (uint generateType, char* fileName, uint startPower, uint stopPower
                  , uint timesToTestEachK, uint kDistribution, uint startK, uint stopK, uint kJump) {
-    uint algorithmsToRun[NUMBEROFALGORITHMS]= {1, 1, 0};
+    uint algorithmsToRun[NUMBEROFALGORITHMS]= {1, 1, 1};
     uint size;
     uint i;
     uint arrayOfKs[stopK+1];

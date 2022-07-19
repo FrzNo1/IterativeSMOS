@@ -18,6 +18,7 @@
 #include <iostream>
 #include <fstream>
 #include <sys/time.h>
+#include <unistd.h>
 
 // include compareMultiselect library
 #include "compareMultiselect.hpp"

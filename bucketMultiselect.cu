@@ -156,7 +156,7 @@ namespace BucketMultiselect{
         sharedSlopes[threadIndex] = slopes[threadIndex];
     }
 
-    syncthreads();
+    __syncthreads();
 
     //assigning elements to buckets and incrementing the bucket counts
     if(index < length) {
@@ -193,7 +193,7 @@ namespace BucketMultiselect{
       }
     }
     
-    syncthreads();        
+    __syncthreads();        
 
     //reading bucket counts from shared memory back to global memory
     for (int i = 0; i <(numBuckets / MAX_THREADS_PER_BLOCK); i++)
@@ -272,7 +272,7 @@ namespace BucketMultiselect{
       }
     }
     
-    syncthreads();
+    __syncthreads();
 
     int minBucketIndex;
     int maxBucketIndex; 

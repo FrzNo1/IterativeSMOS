@@ -1,0 +1,484 @@
+generateProblems.cu(663): warning: conversion from a string literal to "char *" is deprecated
+
+generateProblems.cu(663): warning: conversion from a string literal to "char *" is deprecated
+
+generateProblems.cu(663): warning: conversion from a string literal to "char *" is deprecated
+
+generateProblems.cu(663): warning: conversion from a string literal to "char *" is deprecated
+
+compareIterativeSMOS.hpp(40): warning: conversion from a string literal to "char *" is deprecated
+
+compareIterativeSMOS.hpp(40): warning: conversion from a string literal to "char *" is deprecated
+
+compareIterativeSMOS.hpp(40): warning: conversion from a string literal to "char *" is deprecated
+
+compareIterativeSMOS.cu(71): warning: conversion from a string literal to "char *" is deprecated
+
+compareIterativeSMOS.cu(74): warning: conversion from a string literal to "char *" is deprecated
+
+compareIterativeSMOS.cu(77): warning: conversion from a string literal to "char *" is deprecated
+
+./thrust/detail/device/cuda/detail/b40c/radixsort_api.h(343): warning: invalid narrowing conversion from "int" to "unsigned int"
+          detected during:
+            instantiation of "thrust::detail::device::cuda::detail::b40c_thrust::BaseRadixSortingEnactor<K, V>::BaseRadixSortingEnactor(int, int, unsigned int, int, __nv_bool) [with K=unsigned int, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType]" 
+(745): here
+            instantiation of "thrust::detail::device::cuda::detail::b40c_thrust::RadixSortingEnactor<K, V, unsigned int>::RadixSortingEnactor(unsigned int, int) [with K=unsigned int, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(65): here
+            instantiation of "void thrust::detail::device::cuda::detail::stable_radix_sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::detail::normal_iterator<thrust::device_ptr<uint>>]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(60): here
+            instantiation of "void thrust::detail::device::cuda::detail::stable_radix_sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::device_ptr<uint>]" 
+./thrust/detail/device/cuda/sort.inl(268): here
+            instantiation of "void thrust::detail::device::cuda::first_dispatch::stable_sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering, thrust::detail::true_type) [with RandomAccessIterator=thrust::device_ptr<uint>, StrictWeakOrdering=thrust::less<unsigned int>]" 
+./thrust/detail/device/cuda/sort.inl(388): here
+            [ 2 instantiation contexts not shown ]
+            instantiation of "void thrust::detail::device::stable_sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering) [with RandomAccessIterator=thrust::device_ptr<uint>, StrictWeakOrdering=thrust::less<unsigned int>]" 
+./thrust/detail/device/sort.inl(43): here
+            instantiation of "void thrust::detail::device::sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering) [with RandomAccessIterator=thrust::device_ptr<uint>, StrictWeakOrdering=thrust::less<unsigned int>]" 
+./thrust/detail/dispatch/sort.h(98): here
+            instantiation of "void thrust::detail::dispatch::sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering, thrust::device_space_tag) [with RandomAccessIterator=thrust::device_ptr<uint>, StrictWeakOrdering=thrust::less<unsigned int>]" 
+./thrust/detail/sort.inl(53): here
+            instantiation of "void thrust::sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering) [with RandomAccessIterator=thrust::device_ptr<uint>, StrictWeakOrdering=thrust::less<unsigned int>]" 
+./thrust/detail/sort.inl(42): here
+            instantiation of "void thrust::sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::device_ptr<uint>]" 
+generateProblems.cu(41): here
+
+./thrust/detail/device/cuda/detail/b40c/radixsort_api.h(344): warning: invalid narrowing conversion from "int" to "unsigned int"
+          detected during:
+            instantiation of "thrust::detail::device::cuda::detail::b40c_thrust::BaseRadixSortingEnactor<K, V>::BaseRadixSortingEnactor(int, int, unsigned int, int, __nv_bool) [with K=unsigned int, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType]" 
+(745): here
+            instantiation of "thrust::detail::device::cuda::detail::b40c_thrust::RadixSortingEnactor<K, V, unsigned int>::RadixSortingEnactor(unsigned int, int) [with K=unsigned int, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(65): here
+            instantiation of "void thrust::detail::device::cuda::detail::stable_radix_sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::detail::normal_iterator<thrust::device_ptr<uint>>]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(60): here
+            instantiation of "void thrust::detail::device::cuda::detail::stable_radix_sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::device_ptr<uint>]" 
+./thrust/detail/device/cuda/sort.inl(268): here
+            instantiation of "void thrust::detail::device::cuda::first_dispatch::stable_sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering, thrust::detail::true_type) [with RandomAccessIterator=thrust::device_ptr<uint>, StrictWeakOrdering=thrust::less<unsigned int>]" 
+./thrust/detail/device/cuda/sort.inl(388): here
+            [ 2 instantiation contexts not shown ]
+            instantiation of "void thrust::detail::device::stable_sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering) [with RandomAccessIterator=thrust::device_ptr<uint>, StrictWeakOrdering=thrust::less<unsigned int>]" 
+./thrust/detail/device/sort.inl(43): here
+            instantiation of "void thrust::detail::device::sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering) [with RandomAccessIterator=thrust::device_ptr<uint>, StrictWeakOrdering=thrust::less<unsigned int>]" 
+./thrust/detail/dispatch/sort.h(98): here
+            instantiation of "void thrust::detail::dispatch::sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering, thrust::device_space_tag) [with RandomAccessIterator=thrust::device_ptr<uint>, StrictWeakOrdering=thrust::less<unsigned int>]" 
+./thrust/detail/sort.inl(53): here
+            instantiation of "void thrust::sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering) [with RandomAccessIterator=thrust::device_ptr<uint>, StrictWeakOrdering=thrust::less<unsigned int>]" 
+./thrust/detail/sort.inl(42): here
+            instantiation of "void thrust::sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::device_ptr<uint>]" 
+generateProblems.cu(41): here
+
+./thrust/detail/device/cuda/detail/b40c/radixsort_api.h(345): warning: invalid narrowing conversion from "int" to "unsigned int"
+          detected during:
+            instantiation of "thrust::detail::device::cuda::detail::b40c_thrust::BaseRadixSortingEnactor<K, V>::BaseRadixSortingEnactor(int, int, unsigned int, int, __nv_bool) [with K=unsigned int, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType]" 
+(745): here
+            instantiation of "thrust::detail::device::cuda::detail::b40c_thrust::RadixSortingEnactor<K, V, unsigned int>::RadixSortingEnactor(unsigned int, int) [with K=unsigned int, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(65): here
+            instantiation of "void thrust::detail::device::cuda::detail::stable_radix_sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::detail::normal_iterator<thrust::device_ptr<uint>>]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(60): here
+            instantiation of "void thrust::detail::device::cuda::detail::stable_radix_sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::device_ptr<uint>]" 
+./thrust/detail/device/cuda/sort.inl(268): here
+            instantiation of "void thrust::detail::device::cuda::first_dispatch::stable_sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering, thrust::detail::true_type) [with RandomAccessIterator=thrust::device_ptr<uint>, StrictWeakOrdering=thrust::less<unsigned int>]" 
+./thrust/detail/device/cuda/sort.inl(388): here
+            [ 2 instantiation contexts not shown ]
+            instantiation of "void thrust::detail::device::stable_sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering) [with RandomAccessIterator=thrust::device_ptr<uint>, StrictWeakOrdering=thrust::less<unsigned int>]" 
+./thrust/detail/device/sort.inl(43): here
+            instantiation of "void thrust::detail::device::sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering) [with RandomAccessIterator=thrust::device_ptr<uint>, StrictWeakOrdering=thrust::less<unsigned int>]" 
+./thrust/detail/dispatch/sort.h(98): here
+            instantiation of "void thrust::detail::dispatch::sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering, thrust::device_space_tag) [with RandomAccessIterator=thrust::device_ptr<uint>, StrictWeakOrdering=thrust::less<unsigned int>]" 
+./thrust/detail/sort.inl(53): here
+            instantiation of "void thrust::sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering) [with RandomAccessIterator=thrust::device_ptr<uint>, StrictWeakOrdering=thrust::less<unsigned int>]" 
+./thrust/detail/sort.inl(42): here
+            instantiation of "void thrust::sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::device_ptr<uint>]" 
+generateProblems.cu(41): here
+
+./thrust/detail/device/cuda/detail/b40c/radixsort_scanscatter_kernel.h(1101): warning: function "__ballot"
+/usr/local/cuda/bin/../targets/x86_64-linux/include/sm_20_intrinsics.h(416): here was declared deprecated ("__ballot() is deprecated in favor of __ballot_sync() and may be removed in a future release (Use -Wno-deprecated-declarations to suppress this warning).")
+          detected during:
+            instantiation of "cudaError_t thrust::detail::device::cuda::detail::b40c_thrust::BaseRadixSortingEnactor<K, V>::DigitPlacePass<PASS,RADIX_BITS,BIT,PreprocessFunctor,PostprocessFunctor>(const thrust::detail::device::cuda::detail::b40c_thrust::RadixSortStorage<thrust::detail::device::cuda::detail::b40c_thrust::BaseRadixSortingEnactor<K, V>::ConvertedKeyType, V> &) [with K=unsigned int, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType, PASS=0, RADIX_BITS=4, BIT=0, PreprocessFunctor=thrust::detail::device::cuda::detail::b40c_thrust::PreprocessKeyFunctor<unsigned int>, PostprocessFunctor=thrust::detail::device::cuda::detail::b40c_thrust::NopFunctor<unsigned int>]" 
+./thrust/detail/device/cuda/detail/b40c/radixsort_api.h(721): here
+            instantiation of "cudaError_t thrust::detail::device::cuda::detail::b40c_thrust::RadixSortingEnactor<K, V, unsigned int>::EnactDigitPlacePasses(const thrust::detail::device::cuda::detail::b40c_thrust::RadixSortStorage<thrust::detail::device::cuda::detail::b40c_thrust::RadixSortingEnactor<K, V, unsigned int>::ConvertedKeyType, V> &) [with K=unsigned int, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType]" 
+./thrust/detail/device/cuda/detail/b40c/radixsort_api.h(745): here
+            implicit generation of "thrust::detail::device::cuda::detail::b40c_thrust::RadixSortingEnactor<K, V, unsigned int>::~RadixSortingEnactor() [with K=unsigned int, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType]" 
+./thrust/detail/device/cuda/detail/b40c/radixsort_api.h(745): here
+            instantiation of class "thrust::detail::device::cuda::detail::b40c_thrust::RadixSortingEnactor<K, V, unsigned int> [with K=unsigned int, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType]" 
+./thrust/detail/device/cuda/detail/b40c/radixsort_api.h(745): here
+            instantiation of "thrust::detail::device::cuda::detail::b40c_thrust::RadixSortingEnactor<K, V, unsigned int>::RadixSortingEnactor(unsigned int, int) [with K=unsigned int, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(65): here
+            [ 5 instantiation contexts not shown ]
+            instantiation of "void thrust::detail::device::stable_sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering) [with RandomAccessIterator=thrust::device_ptr<uint>, StrictWeakOrdering=thrust::less<unsigned int>]" 
+./thrust/detail/device/sort.inl(43): here
+            instantiation of "void thrust::detail::device::sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering) [with RandomAccessIterator=thrust::device_ptr<uint>, StrictWeakOrdering=thrust::less<unsigned int>]" 
+./thrust/detail/dispatch/sort.h(98): here
+            instantiation of "void thrust::detail::dispatch::sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering, thrust::device_space_tag) [with RandomAccessIterator=thrust::device_ptr<uint>, StrictWeakOrdering=thrust::less<unsigned int>]" 
+./thrust/detail/sort.inl(53): here
+            instantiation of "void thrust::sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering) [with RandomAccessIterator=thrust::device_ptr<uint>, StrictWeakOrdering=thrust::less<unsigned int>]" 
+./thrust/detail/sort.inl(42): here
+            instantiation of "void thrust::sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::device_ptr<uint>]" 
+generateProblems.cu(41): here
+
+./thrust/detail/device/cuda/detail/b40c/radixsort_scanscatter_kernel.h(360): warning: function "__all"
+/usr/local/cuda/bin/../targets/x86_64-linux/include/device_atomic_functions.h(179): here was declared deprecated ("__all() is deprecated in favor of __all_sync() and may be removed in a future release (Use -Wno-deprecated-declarations to suppress this warning).")
+          detected during:
+            instantiation of "void thrust::detail::device::cuda::detail::b40c_thrust::CorrectForOverflows<RADIX_DIGITS,PASSES_PER_CYCLE,SETS_PER_PASS,SETS_PER_CYCLE,UNGUARDED_IO>(int2 (*)[SETS_PER_PASS], int (*)[SETS_PER_PASS], int *) [with RADIX_DIGITS=16, PASSES_PER_CYCLE=1, SETS_PER_PASS=2, SETS_PER_CYCLE=2, UNGUARDED_IO=true]" 
+(857): here
+            instantiation of "void thrust::detail::device::cuda::detail::b40c_thrust::SrtsScanDigitCycle<K,V,BIT,UNGUARDED_IO,RADIX_DIGITS,LOG_SCAN_LANES_PER_SET,SCAN_LANES_PER_SET,SETS_PER_PASS,PASSES_PER_CYCLE,LOG_SCAN_LANES_PER_PASS,SCAN_LANES_PER_PASS,LOG_PARTIALS_PER_LANE,LOG_PARTIALS_PER_PASS,LOG_RAKING_THREADS_PER_PASS,RAKING_THREADS_PER_PASS,LOG_RAKING_THREADS_PER_LANE,RAKING_THREADS_PER_LANE,LOG_PARTIALS_PER_SEG,PARTIALS_PER_SEG,LOG_PARTIALS_PER_ROW,PARTIALS_PER_ROW,LOG_SEGS_PER_ROW,SEGS_PER_ROW,LOG_ROWS_PER_SET,LOG_ROWS_PER_LANE,ROWS_PER_LANE,LOG_ROWS_PER_PASS,ROWS_PER_PASS,MAX_EXCHANGE_BYTES,PreprocessFunctor,PostprocessFunctor>(thrust::detail::device::cuda::detail::b40c_thrust::VecType<K, 2>::Type *, thrust::detail::device::cuda::detail::b40c_thrust::VecType<V, 2>::Type *, K *, V *, int4 *, int (*)[3][RAKING_THREADS_PER_LANE], int *, int (*)[RADIX_DIGITS], int (*)[SETS_PER_PASS][RADIX_DIGITS], int *, int *, int *) [with K=unsigned int, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType, BIT=0, UNGUARDED_IO=true, RADIX_DIGITS=16, LOG_SCAN_LANES_PER_SET=2, SCAN_LANES_PER_SET=4, SETS_PER_PASS=2, PASSES_PER_CYCLE=1, LOG_SCAN_LANES_PER_PASS=3, SCAN_LANES_PER_PASS=8, LOG_PARTIALS_PER_LANE=7, LOG_PARTIALS_PER_PASS=10, LOG_RAKING_THREADS_PER_PASS=6, RAKING_THREADS_PER_PASS=64, LOG_RAKING_THREADS_PER_LANE=3, RAKING_THREADS_PER_LANE=8, LOG_PARTIALS_PER_SEG=4, PARTIALS_PER_SEG=16, LOG_PARTIALS_PER_ROW=5, PARTIALS_PER_ROW=32, LOG_SEGS_PER_ROW=1, SEGS_PER_ROW=2, LOG_ROWS_PER_SET=5, LOG_ROWS_PER_LANE=2, ROWS_PER_LANE=4, LOG_ROWS_PER_PASS=5, ROWS_PER_PASS=32, MAX_EXCHANGE_BYTES=2048, PreprocessFunctor=thrust::detail::device::cuda::detail::b40c_thrust::PreprocessKeyFunctor<unsigned int>, PostprocessFunctor=thrust::detail::device::cuda::detail::b40c_thrust::NopFunctor<unsigned int>]" 
+(1137): here
+            instantiation of "void thrust::detail::device::cuda::detail::b40c_thrust::ScanScatterDigits<K,V,PASS,RADIX_BITS,BIT,PreprocessFunctor,PostprocessFunctor>(__nv_bool *, int *, K *, K *, V *, V *, thrust::detail::device::cuda::detail::b40c_thrust::CtaDecomposition) [with K=unsigned int, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType, PASS=0, RADIX_BITS=4, BIT=0, PreprocessFunctor=thrust::detail::device::cuda::detail::b40c_thrust::PreprocessKeyFunctor<unsigned int>, PostprocessFunctor=thrust::detail::device::cuda::detail::b40c_thrust::NopFunctor<unsigned int>]" 
+./thrust/detail/device/cuda/detail/b40c/radixsort_api.h(473): here
+            instantiation of "cudaError_t thrust::detail::device::cuda::detail::b40c_thrust::BaseRadixSortingEnactor<K, V>::DigitPlacePass<PASS,RADIX_BITS,BIT,PreprocessFunctor,PostprocessFunctor>(const thrust::detail::device::cuda::detail::b40c_thrust::RadixSortStorage<thrust::detail::device::cuda::detail::b40c_thrust::BaseRadixSortingEnactor<K, V>::ConvertedKeyType, V> &) [with K=unsigned int, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType, PASS=0, RADIX_BITS=4, BIT=0, PreprocessFunctor=thrust::detail::device::cuda::detail::b40c_thrust::PreprocessKeyFunctor<unsigned int>, PostprocessFunctor=thrust::detail::device::cuda::detail::b40c_thrust::NopFunctor<unsigned int>]" 
+./thrust/detail/device/cuda/detail/b40c/radixsort_api.h(721): here
+            instantiation of "cudaError_t thrust::detail::device::cuda::detail::b40c_thrust::RadixSortingEnactor<K, V, unsigned int>::EnactDigitPlacePasses(const thrust::detail::device::cuda::detail::b40c_thrust::RadixSortStorage<thrust::detail::device::cuda::detail::b40c_thrust::RadixSortingEnactor<K, V, unsigned int>::ConvertedKeyType, V> &) [with K=unsigned int, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType]" 
+./thrust/detail/device/cuda/detail/b40c/radixsort_api.h(745): here
+            [ 8 instantiation contexts not shown ]
+            instantiation of "void thrust::detail::device::stable_sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering) [with RandomAccessIterator=thrust::device_ptr<uint>, StrictWeakOrdering=thrust::less<unsigned int>]" 
+./thrust/detail/device/sort.inl(43): here
+            instantiation of "void thrust::detail::device::sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering) [with RandomAccessIterator=thrust::device_ptr<uint>, StrictWeakOrdering=thrust::less<unsigned int>]" 
+./thrust/detail/dispatch/sort.h(98): here
+            instantiation of "void thrust::detail::dispatch::sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering, thrust::device_space_tag) [with RandomAccessIterator=thrust::device_ptr<uint>, StrictWeakOrdering=thrust::less<unsigned int>]" 
+./thrust/detail/sort.inl(53): here
+            instantiation of "void thrust::sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering) [with RandomAccessIterator=thrust::device_ptr<uint>, StrictWeakOrdering=thrust::less<unsigned int>]" 
+./thrust/detail/sort.inl(42): here
+            instantiation of "void thrust::sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::device_ptr<uint>]" 
+generateProblems.cu(41): here
+
+./thrust/detail/device/cuda/detail/b40c/radixsort_scanscatter_kernel.h(323): warning: function "__all"
+/usr/local/cuda/bin/../targets/x86_64-linux/include/device_atomic_functions.h(179): here was declared deprecated ("__all() is deprecated in favor of __all_sync() and may be removed in a future release (Use -Wno-deprecated-declarations to suppress this warning).")
+          detected during:
+            instantiation of "void thrust::detail::device::cuda::detail::b40c_thrust::CorrectUnguardedPassOverflow<RADIX_DIGITS,SETS_PER_PASS>(int2 *, int *) [with RADIX_DIGITS=16, SETS_PER_PASS=2]" 
+(352): here
+            instantiation of "void thrust::detail::device::cuda::detail::b40c_thrust::CorrectUnguardedCycleOverflow<RADIX_DIGITS,PASSES_PER_CYCLE,SETS_PER_PASS>(int2 (*)[SETS_PER_PASS], int (*)[SETS_PER_PASS]) [with RADIX_DIGITS=16, PASSES_PER_CYCLE=1, SETS_PER_PASS=2]" 
+(380): here
+            instantiation of "void thrust::detail::device::cuda::detail::b40c_thrust::CorrectForOverflows<RADIX_DIGITS,PASSES_PER_CYCLE,SETS_PER_PASS,SETS_PER_CYCLE,UNGUARDED_IO>(int2 (*)[SETS_PER_PASS], int (*)[SETS_PER_PASS], int *) [with RADIX_DIGITS=16, PASSES_PER_CYCLE=1, SETS_PER_PASS=2, SETS_PER_CYCLE=2, UNGUARDED_IO=true]" 
+(857): here
+            instantiation of "void thrust::detail::device::cuda::detail::b40c_thrust::SrtsScanDigitCycle<K,V,BIT,UNGUARDED_IO,RADIX_DIGITS,LOG_SCAN_LANES_PER_SET,SCAN_LANES_PER_SET,SETS_PER_PASS,PASSES_PER_CYCLE,LOG_SCAN_LANES_PER_PASS,SCAN_LANES_PER_PASS,LOG_PARTIALS_PER_LANE,LOG_PARTIALS_PER_PASS,LOG_RAKING_THREADS_PER_PASS,RAKING_THREADS_PER_PASS,LOG_RAKING_THREADS_PER_LANE,RAKING_THREADS_PER_LANE,LOG_PARTIALS_PER_SEG,PARTIALS_PER_SEG,LOG_PARTIALS_PER_ROW,PARTIALS_PER_ROW,LOG_SEGS_PER_ROW,SEGS_PER_ROW,LOG_ROWS_PER_SET,LOG_ROWS_PER_LANE,ROWS_PER_LANE,LOG_ROWS_PER_PASS,ROWS_PER_PASS,MAX_EXCHANGE_BYTES,PreprocessFunctor,PostprocessFunctor>(thrust::detail::device::cuda::detail::b40c_thrust::VecType<K, 2>::Type *, thrust::detail::device::cuda::detail::b40c_thrust::VecType<V, 2>::Type *, K *, V *, int4 *, int (*)[3][RAKING_THREADS_PER_LANE], int *, int (*)[RADIX_DIGITS], int (*)[SETS_PER_PASS][RADIX_DIGITS], int *, int *, int *) [with K=unsigned int, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType, BIT=0, UNGUARDED_IO=true, RADIX_DIGITS=16, LOG_SCAN_LANES_PER_SET=2, SCAN_LANES_PER_SET=4, SETS_PER_PASS=2, PASSES_PER_CYCLE=1, LOG_SCAN_LANES_PER_PASS=3, SCAN_LANES_PER_PASS=8, LOG_PARTIALS_PER_LANE=7, LOG_PARTIALS_PER_PASS=10, LOG_RAKING_THREADS_PER_PASS=6, RAKING_THREADS_PER_PASS=64, LOG_RAKING_THREADS_PER_LANE=3, RAKING_THREADS_PER_LANE=8, LOG_PARTIALS_PER_SEG=4, PARTIALS_PER_SEG=16, LOG_PARTIALS_PER_ROW=5, PARTIALS_PER_ROW=32, LOG_SEGS_PER_ROW=1, SEGS_PER_ROW=2, LOG_ROWS_PER_SET=5, LOG_ROWS_PER_LANE=2, ROWS_PER_LANE=4, LOG_ROWS_PER_PASS=5, ROWS_PER_PASS=32, MAX_EXCHANGE_BYTES=2048, PreprocessFunctor=thrust::detail::device::cuda::detail::b40c_thrust::PreprocessKeyFunctor<unsigned int>, PostprocessFunctor=thrust::detail::device::cuda::detail::b40c_thrust::NopFunctor<unsigned int>]" 
+(1137): here
+            instantiation of "void thrust::detail::device::cuda::detail::b40c_thrust::ScanScatterDigits<K,V,PASS,RADIX_BITS,BIT,PreprocessFunctor,PostprocessFunctor>(__nv_bool *, int *, K *, K *, V *, V *, thrust::detail::device::cuda::detail::b40c_thrust::CtaDecomposition) [with K=unsigned int, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType, PASS=0, RADIX_BITS=4, BIT=0, PreprocessFunctor=thrust::detail::device::cuda::detail::b40c_thrust::PreprocessKeyFunctor<unsigned int>, PostprocessFunctor=thrust::detail::device::cuda::detail::b40c_thrust::NopFunctor<unsigned int>]" 
+./thrust/detail/device/cuda/detail/b40c/radixsort_api.h(473): here
+            [ 10 instantiation contexts not shown ]
+            instantiation of "void thrust::detail::device::stable_sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering) [with RandomAccessIterator=thrust::device_ptr<uint>, StrictWeakOrdering=thrust::less<unsigned int>]" 
+./thrust/detail/device/sort.inl(43): here
+            instantiation of "void thrust::detail::device::sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering) [with RandomAccessIterator=thrust::device_ptr<uint>, StrictWeakOrdering=thrust::less<unsigned int>]" 
+./thrust/detail/dispatch/sort.h(98): here
+            instantiation of "void thrust::detail::dispatch::sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering, thrust::device_space_tag) [with RandomAccessIterator=thrust::device_ptr<uint>, StrictWeakOrdering=thrust::less<unsigned int>]" 
+./thrust/detail/sort.inl(53): here
+            instantiation of "void thrust::sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering) [with RandomAccessIterator=thrust::device_ptr<uint>, StrictWeakOrdering=thrust::less<unsigned int>]" 
+./thrust/detail/sort.inl(42): here
+            instantiation of "void thrust::sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::device_ptr<uint>]" 
+generateProblems.cu(41): here
+
+./thrust/detail/device/cuda/detail/b40c/radixsort_api.h(343): warning: invalid narrowing conversion from "int" to "unsigned int"
+          detected during:
+            instantiation of "thrust::detail::device::cuda::detail::b40c_thrust::BaseRadixSortingEnactor<K, V>::BaseRadixSortingEnactor(int, int, unsigned int, int, __nv_bool) [with K=unsigned long long, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType]" 
+(796): here
+            instantiation of "thrust::detail::device::cuda::detail::b40c_thrust::RadixSortingEnactor<K, V, unsigned long long>::RadixSortingEnactor(unsigned int, int) [with K=unsigned long long, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(65): here
+            instantiation of "void thrust::detail::device::cuda::detail::stable_radix_sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::detail::normal_iterator<thrust::device_ptr<unsigned long long>>]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(60): here
+            instantiation of "void thrust::detail::device::cuda::detail::stable_radix_sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::device_ptr<unsigned long long>]" 
+./thrust/detail/device/cuda/sort.inl(268): here
+            instantiation of "void thrust::detail::device::cuda::first_dispatch::stable_sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering, thrust::detail::true_type) [with RandomAccessIterator=thrust::device_ptr<unsigned long long>, StrictWeakOrdering=thrust::less<unsigned long long>]" 
+./thrust/detail/device/cuda/sort.inl(388): here
+            [ 2 instantiation contexts not shown ]
+            instantiation of "void thrust::detail::device::stable_sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering) [with RandomAccessIterator=thrust::device_ptr<unsigned long long>, StrictWeakOrdering=thrust::less<unsigned long long>]" 
+./thrust/detail/device/sort.inl(43): here
+            instantiation of "void thrust::detail::device::sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering) [with RandomAccessIterator=thrust::device_ptr<unsigned long long>, StrictWeakOrdering=thrust::less<unsigned long long>]" 
+./thrust/detail/dispatch/sort.h(98): here
+            instantiation of "void thrust::detail::dispatch::sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering, thrust::device_space_tag) [with RandomAccessIterator=thrust::device_ptr<unsigned long long>, StrictWeakOrdering=thrust::less<unsigned long long>]" 
+./thrust/detail/sort.inl(53): here
+            instantiation of "void thrust::sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering) [with RandomAccessIterator=thrust::device_ptr<unsigned long long>, StrictWeakOrdering=thrust::less<unsigned long long>]" 
+./thrust/detail/sort.inl(42): here
+            instantiation of "void thrust::sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::device_ptr<unsigned long long>]" 
+generateProblems.cu(473): here
+
+./thrust/detail/device/cuda/detail/b40c/radixsort_api.h(344): warning: invalid narrowing conversion from "int" to "unsigned int"
+          detected during:
+            instantiation of "thrust::detail::device::cuda::detail::b40c_thrust::BaseRadixSortingEnactor<K, V>::BaseRadixSortingEnactor(int, int, unsigned int, int, __nv_bool) [with K=unsigned long long, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType]" 
+(796): here
+            instantiation of "thrust::detail::device::cuda::detail::b40c_thrust::RadixSortingEnactor<K, V, unsigned long long>::RadixSortingEnactor(unsigned int, int) [with K=unsigned long long, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(65): here
+            instantiation of "void thrust::detail::device::cuda::detail::stable_radix_sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::detail::normal_iterator<thrust::device_ptr<unsigned long long>>]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(60): here
+            instantiation of "void thrust::detail::device::cuda::detail::stable_radix_sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::device_ptr<unsigned long long>]" 
+./thrust/detail/device/cuda/sort.inl(268): here
+            instantiation of "void thrust::detail::device::cuda::first_dispatch::stable_sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering, thrust::detail::true_type) [with RandomAccessIterator=thrust::device_ptr<unsigned long long>, StrictWeakOrdering=thrust::less<unsigned long long>]" 
+./thrust/detail/device/cuda/sort.inl(388): here
+            [ 2 instantiation contexts not shown ]
+            instantiation of "void thrust::detail::device::stable_sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering) [with RandomAccessIterator=thrust::device_ptr<unsigned long long>, StrictWeakOrdering=thrust::less<unsigned long long>]" 
+./thrust/detail/device/sort.inl(43): here
+            instantiation of "void thrust::detail::device::sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering) [with RandomAccessIterator=thrust::device_ptr<unsigned long long>, StrictWeakOrdering=thrust::less<unsigned long long>]" 
+./thrust/detail/dispatch/sort.h(98): here
+            instantiation of "void thrust::detail::dispatch::sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering, thrust::device_space_tag) [with RandomAccessIterator=thrust::device_ptr<unsigned long long>, StrictWeakOrdering=thrust::less<unsigned long long>]" 
+./thrust/detail/sort.inl(53): here
+            instantiation of "void thrust::sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering) [with RandomAccessIterator=thrust::device_ptr<unsigned long long>, StrictWeakOrdering=thrust::less<unsigned long long>]" 
+./thrust/detail/sort.inl(42): here
+            instantiation of "void thrust::sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::device_ptr<unsigned long long>]" 
+generateProblems.cu(473): here
+
+./thrust/detail/device/cuda/detail/b40c/radixsort_api.h(345): warning: invalid narrowing conversion from "int" to "unsigned int"
+          detected during:
+            instantiation of "thrust::detail::device::cuda::detail::b40c_thrust::BaseRadixSortingEnactor<K, V>::BaseRadixSortingEnactor(int, int, unsigned int, int, __nv_bool) [with K=unsigned long long, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType]" 
+(796): here
+            instantiation of "thrust::detail::device::cuda::detail::b40c_thrust::RadixSortingEnactor<K, V, unsigned long long>::RadixSortingEnactor(unsigned int, int) [with K=unsigned long long, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(65): here
+            instantiation of "void thrust::detail::device::cuda::detail::stable_radix_sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::detail::normal_iterator<thrust::device_ptr<unsigned long long>>]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(60): here
+            instantiation of "void thrust::detail::device::cuda::detail::stable_radix_sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::device_ptr<unsigned long long>]" 
+./thrust/detail/device/cuda/sort.inl(268): here
+            instantiation of "void thrust::detail::device::cuda::first_dispatch::stable_sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering, thrust::detail::true_type) [with RandomAccessIterator=thrust::device_ptr<unsigned long long>, StrictWeakOrdering=thrust::less<unsigned long long>]" 
+./thrust/detail/device/cuda/sort.inl(388): here
+            [ 2 instantiation contexts not shown ]
+            instantiation of "void thrust::detail::device::stable_sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering) [with RandomAccessIterator=thrust::device_ptr<unsigned long long>, StrictWeakOrdering=thrust::less<unsigned long long>]" 
+./thrust/detail/device/sort.inl(43): here
+            instantiation of "void thrust::detail::device::sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering) [with RandomAccessIterator=thrust::device_ptr<unsigned long long>, StrictWeakOrdering=thrust::less<unsigned long long>]" 
+./thrust/detail/dispatch/sort.h(98): here
+            instantiation of "void thrust::detail::dispatch::sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering, thrust::device_space_tag) [with RandomAccessIterator=thrust::device_ptr<unsigned long long>, StrictWeakOrdering=thrust::less<unsigned long long>]" 
+./thrust/detail/sort.inl(53): here
+            instantiation of "void thrust::sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering) [with RandomAccessIterator=thrust::device_ptr<unsigned long long>, StrictWeakOrdering=thrust::less<unsigned long long>]" 
+./thrust/detail/sort.inl(42): here
+            instantiation of "void thrust::sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::device_ptr<unsigned long long>]" 
+generateProblems.cu(473): here
+
+./thrust/detail/device/cuda/detail/b40c/radixsort_api.h(343): warning: invalid narrowing conversion from "int" to "unsigned int"
+          detected during:
+            instantiation of "thrust::detail::device::cuda::detail::b40c_thrust::BaseRadixSortingEnactor<K, V>::BaseRadixSortingEnactor(int, int, unsigned int, int, __nv_bool) [with K=float, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType]" 
+(745): here
+            instantiation of "thrust::detail::device::cuda::detail::b40c_thrust::RadixSortingEnactor<K, V, unsigned int>::RadixSortingEnactor(unsigned int, int) [with K=float, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(65): here
+            instantiation of "void thrust::detail::device::cuda::detail::stable_radix_sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::detail::normal_iterator<thrust::device_ptr<float>>]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(60): here
+            instantiation of "void thrust::detail::device::cuda::detail::stable_radix_sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::device_ptr<float>]" 
+./thrust/detail/device/cuda/sort.inl(268): here
+            instantiation of "void thrust::detail::device::cuda::first_dispatch::stable_sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering, thrust::detail::true_type) [with RandomAccessIterator=thrust::device_ptr<float>, StrictWeakOrdering=thrust::less<float>]" 
+./thrust/detail/device/cuda/sort.inl(388): here
+            [ 5 instantiation contexts not shown ]
+            instantiation of "void thrust::sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering) [with RandomAccessIterator=thrust::device_ptr<float>, StrictWeakOrdering=thrust::less<float>]" 
+./thrust/detail/sort.inl(42): here
+            instantiation of "void thrust::sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::device_ptr<float>]" 
+iterativeSMOSTimingFunctions.cu(61): here
+            instantiation of "results_t<T> *timeSortAndChooseMultiselect(T *, uint, uint *, uint) [with T=float]" 
+compareIterativeSMOS.hpp(73): here
+            instantiation of "void CompareIterativeSMOS::compareMultiselectAlgorithms(uint, uint *, uint, uint, uint *, uint, uint, char *, T *) [with T=float]" 
+compareIterativeSMOS.hpp(259): here
+            instantiation of "void CompareIterativeSMOS::runTests<T>(uint, char *, uint, uint, uint, uint, uint, uint, uint) [with T=float]" 
+compareIterativeSMOS.cu(94): here
+
+./thrust/detail/device/cuda/detail/b40c/radixsort_api.h(344): warning: invalid narrowing conversion from "int" to "unsigned int"
+          detected during:
+            instantiation of "thrust::detail::device::cuda::detail::b40c_thrust::BaseRadixSortingEnactor<K, V>::BaseRadixSortingEnactor(int, int, unsigned int, int, __nv_bool) [with K=float, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType]" 
+(745): here
+            instantiation of "thrust::detail::device::cuda::detail::b40c_thrust::RadixSortingEnactor<K, V, unsigned int>::RadixSortingEnactor(unsigned int, int) [with K=float, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(65): here
+            instantiation of "void thrust::detail::device::cuda::detail::stable_radix_sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::detail::normal_iterator<thrust::device_ptr<float>>]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(60): here
+            instantiation of "void thrust::detail::device::cuda::detail::stable_radix_sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::device_ptr<float>]" 
+./thrust/detail/device/cuda/sort.inl(268): here
+            instantiation of "void thrust::detail::device::cuda::first_dispatch::stable_sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering, thrust::detail::true_type) [with RandomAccessIterator=thrust::device_ptr<float>, StrictWeakOrdering=thrust::less<float>]" 
+./thrust/detail/device/cuda/sort.inl(388): here
+            [ 5 instantiation contexts not shown ]
+            instantiation of "void thrust::sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering) [with RandomAccessIterator=thrust::device_ptr<float>, StrictWeakOrdering=thrust::less<float>]" 
+./thrust/detail/sort.inl(42): here
+            instantiation of "void thrust::sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::device_ptr<float>]" 
+iterativeSMOSTimingFunctions.cu(61): here
+            instantiation of "results_t<T> *timeSortAndChooseMultiselect(T *, uint, uint *, uint) [with T=float]" 
+compareIterativeSMOS.hpp(73): here
+            instantiation of "void CompareIterativeSMOS::compareMultiselectAlgorithms(uint, uint *, uint, uint, uint *, uint, uint, char *, T *) [with T=float]" 
+compareIterativeSMOS.hpp(259): here
+            instantiation of "void CompareIterativeSMOS::runTests<T>(uint, char *, uint, uint, uint, uint, uint, uint, uint) [with T=float]" 
+compareIterativeSMOS.cu(94): here
+
+./thrust/detail/device/cuda/detail/b40c/radixsort_api.h(345): warning: invalid narrowing conversion from "int" to "unsigned int"
+          detected during:
+            instantiation of "thrust::detail::device::cuda::detail::b40c_thrust::BaseRadixSortingEnactor<K, V>::BaseRadixSortingEnactor(int, int, unsigned int, int, __nv_bool) [with K=float, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType]" 
+(745): here
+            instantiation of "thrust::detail::device::cuda::detail::b40c_thrust::RadixSortingEnactor<K, V, unsigned int>::RadixSortingEnactor(unsigned int, int) [with K=float, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(65): here
+            instantiation of "void thrust::detail::device::cuda::detail::stable_radix_sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::detail::normal_iterator<thrust::device_ptr<float>>]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(60): here
+            instantiation of "void thrust::detail::device::cuda::detail::stable_radix_sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::device_ptr<float>]" 
+./thrust/detail/device/cuda/sort.inl(268): here
+            instantiation of "void thrust::detail::device::cuda::first_dispatch::stable_sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering, thrust::detail::true_type) [with RandomAccessIterator=thrust::device_ptr<float>, StrictWeakOrdering=thrust::less<float>]" 
+./thrust/detail/device/cuda/sort.inl(388): here
+            [ 5 instantiation contexts not shown ]
+            instantiation of "void thrust::sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering) [with RandomAccessIterator=thrust::device_ptr<float>, StrictWeakOrdering=thrust::less<float>]" 
+./thrust/detail/sort.inl(42): here
+            instantiation of "void thrust::sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::device_ptr<float>]" 
+iterativeSMOSTimingFunctions.cu(61): here
+            instantiation of "results_t<T> *timeSortAndChooseMultiselect(T *, uint, uint *, uint) [with T=float]" 
+compareIterativeSMOS.hpp(73): here
+            instantiation of "void CompareIterativeSMOS::compareMultiselectAlgorithms(uint, uint *, uint, uint, uint *, uint, uint, char *, T *) [with T=float]" 
+compareIterativeSMOS.hpp(259): here
+            instantiation of "void CompareIterativeSMOS::runTests<T>(uint, char *, uint, uint, uint, uint, uint, uint, uint) [with T=float]" 
+compareIterativeSMOS.cu(94): here
+
+./thrust/detail/device/cuda/detail/b40c/radixsort_api.h(343): warning: invalid narrowing conversion from "int" to "unsigned int"
+          detected during:
+            instantiation of "thrust::detail::device::cuda::detail::b40c_thrust::BaseRadixSortingEnactor<K, V>::BaseRadixSortingEnactor(int, int, unsigned int, int, __nv_bool) [with K=unsigned int, V=unsigned int]" 
+(745): here
+            instantiation of "thrust::detail::device::cuda::detail::b40c_thrust::RadixSortingEnactor<K, V, unsigned int>::RadixSortingEnactor(unsigned int, int) [with K=unsigned int, V=unsigned int]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(124): here
+            instantiation of "void thrust::detail::device::cuda::detail::stable_radix_sort_by_key(RandomAccessIterator1, RandomAccessIterator1, RandomAccessIterator2, thrust::detail::true_type) [with RandomAccessIterator1=thrust::detail::normal_iterator<thrust::device_ptr<uint>>, RandomAccessIterator2=thrust::detail::normal_iterator<thrust::device_ptr<uint>>]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(200): here
+            instantiation of "void thrust::detail::device::cuda::detail::stable_radix_sort_by_key(RandomAccessIterator1, RandomAccessIterator1, RandomAccessIterator2) [with RandomAccessIterator1=thrust::detail::normal_iterator<thrust::device_ptr<uint>>, RandomAccessIterator2=thrust::detail::normal_iterator<thrust::device_ptr<uint>>]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(119): here
+            instantiation of "void thrust::detail::device::cuda::detail::stable_radix_sort_by_key(RandomAccessIterator1, RandomAccessIterator1, RandomAccessIterator2, thrust::detail::true_type) [with RandomAccessIterator1=thrust::detail::normal_iterator<thrust::device_ptr<uint>>, RandomAccessIterator2=thrust::device_ptr<uint>]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(200): here
+            [ 11 instantiation contexts not shown ]
+            instantiation of "T BucketMultiselect::bucketMultiSelect(T *, int, uint *, int, T *, int, int, int, int) [with T=float]" 
+bucketMultiselect.cu(876): here
+            instantiation of "T BucketMultiselect::bucketMultiselectWrapper(T *, int, uint *, int, T *, int, int) [with T=float]" 
+iterativeSMOSTimingFunctions.cu(113): here
+            instantiation of "results_t<T> *timeBucketMultiselect(T *, uint, uint *, uint) [with T=float]" 
+compareIterativeSMOS.hpp(73): here
+            instantiation of "void CompareIterativeSMOS::compareMultiselectAlgorithms(uint, uint *, uint, uint, uint *, uint, uint, char *, T *) [with T=float]" 
+compareIterativeSMOS.hpp(259): here
+            instantiation of "void CompareIterativeSMOS::runTests<T>(uint, char *, uint, uint, uint, uint, uint, uint, uint) [with T=float]" 
+compareIterativeSMOS.cu(94): here
+
+./thrust/detail/device/cuda/detail/b40c/radixsort_api.h(344): warning: invalid narrowing conversion from "int" to "unsigned int"
+          detected during:
+            instantiation of "thrust::detail::device::cuda::detail::b40c_thrust::BaseRadixSortingEnactor<K, V>::BaseRadixSortingEnactor(int, int, unsigned int, int, __nv_bool) [with K=unsigned int, V=unsigned int]" 
+(745): here
+            instantiation of "thrust::detail::device::cuda::detail::b40c_thrust::RadixSortingEnactor<K, V, unsigned int>::RadixSortingEnactor(unsigned int, int) [with K=unsigned int, V=unsigned int]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(124): here
+            instantiation of "void thrust::detail::device::cuda::detail::stable_radix_sort_by_key(RandomAccessIterator1, RandomAccessIterator1, RandomAccessIterator2, thrust::detail::true_type) [with RandomAccessIterator1=thrust::detail::normal_iterator<thrust::device_ptr<uint>>, RandomAccessIterator2=thrust::detail::normal_iterator<thrust::device_ptr<uint>>]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(200): here
+            instantiation of "void thrust::detail::device::cuda::detail::stable_radix_sort_by_key(RandomAccessIterator1, RandomAccessIterator1, RandomAccessIterator2) [with RandomAccessIterator1=thrust::detail::normal_iterator<thrust::device_ptr<uint>>, RandomAccessIterator2=thrust::detail::normal_iterator<thrust::device_ptr<uint>>]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(119): here
+            instantiation of "void thrust::detail::device::cuda::detail::stable_radix_sort_by_key(RandomAccessIterator1, RandomAccessIterator1, RandomAccessIterator2, thrust::detail::true_type) [with RandomAccessIterator1=thrust::detail::normal_iterator<thrust::device_ptr<uint>>, RandomAccessIterator2=thrust::device_ptr<uint>]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(200): here
+            [ 11 instantiation contexts not shown ]
+            instantiation of "T BucketMultiselect::bucketMultiSelect(T *, int, uint *, int, T *, int, int, int, int) [with T=float]" 
+bucketMultiselect.cu(876): here
+            instantiation of "T BucketMultiselect::bucketMultiselectWrapper(T *, int, uint *, int, T *, int, int) [with T=float]" 
+iterativeSMOSTimingFunctions.cu(113): here
+            instantiation of "results_t<T> *timeBucketMultiselect(T *, uint, uint *, uint) [with T=float]" 
+compareIterativeSMOS.hpp(73): here
+            instantiation of "void CompareIterativeSMOS::compareMultiselectAlgorithms(uint, uint *, uint, uint, uint *, uint, uint, char *, T *) [with T=float]" 
+compareIterativeSMOS.hpp(259): here
+            instantiation of "void CompareIterativeSMOS::runTests<T>(uint, char *, uint, uint, uint, uint, uint, uint, uint) [with T=float]" 
+compareIterativeSMOS.cu(94): here
+
+./thrust/detail/device/cuda/detail/b40c/radixsort_api.h(345): warning: invalid narrowing conversion from "int" to "unsigned int"
+          detected during:
+            instantiation of "thrust::detail::device::cuda::detail::b40c_thrust::BaseRadixSortingEnactor<K, V>::BaseRadixSortingEnactor(int, int, unsigned int, int, __nv_bool) [with K=unsigned int, V=unsigned int]" 
+(745): here
+            instantiation of "thrust::detail::device::cuda::detail::b40c_thrust::RadixSortingEnactor<K, V, unsigned int>::RadixSortingEnactor(unsigned int, int) [with K=unsigned int, V=unsigned int]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(124): here
+            instantiation of "void thrust::detail::device::cuda::detail::stable_radix_sort_by_key(RandomAccessIterator1, RandomAccessIterator1, RandomAccessIterator2, thrust::detail::true_type) [with RandomAccessIterator1=thrust::detail::normal_iterator<thrust::device_ptr<uint>>, RandomAccessIterator2=thrust::detail::normal_iterator<thrust::device_ptr<uint>>]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(200): here
+            instantiation of "void thrust::detail::device::cuda::detail::stable_radix_sort_by_key(RandomAccessIterator1, RandomAccessIterator1, RandomAccessIterator2) [with RandomAccessIterator1=thrust::detail::normal_iterator<thrust::device_ptr<uint>>, RandomAccessIterator2=thrust::detail::normal_iterator<thrust::device_ptr<uint>>]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(119): here
+            instantiation of "void thrust::detail::device::cuda::detail::stable_radix_sort_by_key(RandomAccessIterator1, RandomAccessIterator1, RandomAccessIterator2, thrust::detail::true_type) [with RandomAccessIterator1=thrust::detail::normal_iterator<thrust::device_ptr<uint>>, RandomAccessIterator2=thrust::device_ptr<uint>]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(200): here
+            [ 11 instantiation contexts not shown ]
+            instantiation of "T BucketMultiselect::bucketMultiSelect(T *, int, uint *, int, T *, int, int, int, int) [with T=float]" 
+bucketMultiselect.cu(876): here
+            instantiation of "T BucketMultiselect::bucketMultiselectWrapper(T *, int, uint *, int, T *, int, int) [with T=float]" 
+iterativeSMOSTimingFunctions.cu(113): here
+            instantiation of "results_t<T> *timeBucketMultiselect(T *, uint, uint *, uint) [with T=float]" 
+compareIterativeSMOS.hpp(73): here
+            instantiation of "void CompareIterativeSMOS::compareMultiselectAlgorithms(uint, uint *, uint, uint, uint *, uint, uint, char *, T *) [with T=float]" 
+compareIterativeSMOS.hpp(259): here
+            instantiation of "void CompareIterativeSMOS::runTests<T>(uint, char *, uint, uint, uint, uint, uint, uint, uint) [with T=float]" 
+compareIterativeSMOS.cu(94): here
+
+iterativeSMOS.cu(185): error: namespace "thrust" has no member "device"
+          detected during:
+            instantiation of "T IterativeSMOS::iterativeSMOS(T *, int, unsigned int *, int, T *, int, int, int, int) [with T=float]" 
+(1049): here
+            instantiation of "T IterativeSMOS::iterativeSMOSWrapper(T *, int, uint *, int, T *, int, int) [with T=float]" 
+iterativeSMOSTimingFunctions.cu(168): here
+            instantiation of "results_t<T> *timeIterativeSMOS(T *, uint, uint *, uint) [with T=float]" 
+compareIterativeSMOS.hpp(73): here
+            instantiation of "void CompareIterativeSMOS::compareMultiselectAlgorithms(uint, uint *, uint, uint, uint *, uint, uint, char *, T *) [with T=float]" 
+compareIterativeSMOS.hpp(259): here
+            instantiation of "void CompareIterativeSMOS::runTests<T>(uint, char *, uint, uint, uint, uint, uint, uint, uint) [with T=float]" 
+compareIterativeSMOS.cu(94): here
+
+iterativeSMOS.cu(185): error: no instance of overloaded function "thrust::exclusive_scan" matches the argument list
+            argument types are: (<error-type>, unsigned int *, unsigned int *, unsigned int *, int)
+          detected during:
+            instantiation of "T IterativeSMOS::iterativeSMOS(T *, int, unsigned int *, int, T *, int, int, int, int) [with T=float]" 
+(1049): here
+            instantiation of "T IterativeSMOS::iterativeSMOSWrapper(T *, int, uint *, int, T *, int, int) [with T=float]" 
+iterativeSMOSTimingFunctions.cu(168): here
+            instantiation of "results_t<T> *timeIterativeSMOS(T *, uint, uint *, uint) [with T=float]" 
+compareIterativeSMOS.hpp(73): here
+            instantiation of "void CompareIterativeSMOS::compareMultiselectAlgorithms(uint, uint *, uint, uint, uint *, uint, uint, char *, T *) [with T=float]" 
+compareIterativeSMOS.hpp(259): here
+            instantiation of "void CompareIterativeSMOS::runTests<T>(uint, char *, uint, uint, uint, uint, uint, uint, uint) [with T=float]" 
+compareIterativeSMOS.cu(94): here
+
+./thrust/detail/device/cuda/detail/b40c/radixsort_api.h(343): warning: invalid narrowing conversion from "int" to "unsigned int"
+          detected during:
+            instantiation of "thrust::detail::device::cuda::detail::b40c_thrust::BaseRadixSortingEnactor<K, V>::BaseRadixSortingEnactor(int, int, unsigned int, int, __nv_bool) [with K=double, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType]" 
+(796): here
+            instantiation of "thrust::detail::device::cuda::detail::b40c_thrust::RadixSortingEnactor<K, V, unsigned long long>::RadixSortingEnactor(unsigned int, int) [with K=double, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(65): here
+            instantiation of "void thrust::detail::device::cuda::detail::stable_radix_sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::detail::normal_iterator<thrust::device_ptr<double>>]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(60): here
+            instantiation of "void thrust::detail::device::cuda::detail::stable_radix_sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::device_ptr<double>]" 
+./thrust/detail/device/cuda/sort.inl(268): here
+            instantiation of "void thrust::detail::device::cuda::first_dispatch::stable_sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering, thrust::detail::true_type) [with RandomAccessIterator=thrust::device_ptr<double>, StrictWeakOrdering=thrust::less<double>]" 
+./thrust/detail/device/cuda/sort.inl(388): here
+            [ 5 instantiation contexts not shown ]
+            instantiation of "void thrust::sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering) [with RandomAccessIterator=thrust::device_ptr<double>, StrictWeakOrdering=thrust::less<double>]" 
+./thrust/detail/sort.inl(42): here
+            instantiation of "void thrust::sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::device_ptr<double>]" 
+iterativeSMOSTimingFunctions.cu(61): here
+            instantiation of "results_t<T> *timeSortAndChooseMultiselect(T *, uint, uint *, uint) [with T=double]" 
+compareIterativeSMOS.hpp(73): here
+            instantiation of "void CompareIterativeSMOS::compareMultiselectAlgorithms(uint, uint *, uint, uint, uint *, uint, uint, char *, T *) [with T=double]" 
+compareIterativeSMOS.hpp(259): here
+            instantiation of "void CompareIterativeSMOS::runTests<T>(uint, char *, uint, uint, uint, uint, uint, uint, uint) [with T=double]" 
+compareIterativeSMOS.cu(98): here
+
+./thrust/detail/device/cuda/detail/b40c/radixsort_api.h(344): warning: invalid narrowing conversion from "int" to "unsigned int"
+          detected during:
+            instantiation of "thrust::detail::device::cuda::detail::b40c_thrust::BaseRadixSortingEnactor<K, V>::BaseRadixSortingEnactor(int, int, unsigned int, int, __nv_bool) [with K=double, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType]" 
+(796): here
+            instantiation of "thrust::detail::device::cuda::detail::b40c_thrust::RadixSortingEnactor<K, V, unsigned long long>::RadixSortingEnactor(unsigned int, int) [with K=double, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(65): here
+            instantiation of "void thrust::detail::device::cuda::detail::stable_radix_sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::detail::normal_iterator<thrust::device_ptr<double>>]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(60): here
+            instantiation of "void thrust::detail::device::cuda::detail::stable_radix_sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::device_ptr<double>]" 
+./thrust/detail/device/cuda/sort.inl(268): here
+            instantiation of "void thrust::detail::device::cuda::first_dispatch::stable_sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering, thrust::detail::true_type) [with RandomAccessIterator=thrust::device_ptr<double>, StrictWeakOrdering=thrust::less<double>]" 
+./thrust/detail/device/cuda/sort.inl(388): here
+            [ 5 instantiation contexts not shown ]
+            instantiation of "void thrust::sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering) [with RandomAccessIterator=thrust::device_ptr<double>, StrictWeakOrdering=thrust::less<double>]" 
+./thrust/detail/sort.inl(42): here
+            instantiation of "void thrust::sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::device_ptr<double>]" 
+iterativeSMOSTimingFunctions.cu(61): here
+            instantiation of "results_t<T> *timeSortAndChooseMultiselect(T *, uint, uint *, uint) [with T=double]" 
+compareIterativeSMOS.hpp(73): here
+            instantiation of "void CompareIterativeSMOS::compareMultiselectAlgorithms(uint, uint *, uint, uint, uint *, uint, uint, char *, T *) [with T=double]" 
+compareIterativeSMOS.hpp(259): here
+            instantiation of "void CompareIterativeSMOS::runTests<T>(uint, char *, uint, uint, uint, uint, uint, uint, uint) [with T=double]" 
+compareIterativeSMOS.cu(98): here
+
+./thrust/detail/device/cuda/detail/b40c/radixsort_api.h(345): warning: invalid narrowing conversion from "int" to "unsigned int"
+          detected during:
+            instantiation of "thrust::detail::device::cuda::detail::b40c_thrust::BaseRadixSortingEnactor<K, V>::BaseRadixSortingEnactor(int, int, unsigned int, int, __nv_bool) [with K=double, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType]" 
+(796): here
+            instantiation of "thrust::detail::device::cuda::detail::b40c_thrust::RadixSortingEnactor<K, V, unsigned long long>::RadixSortingEnactor(unsigned int, int) [with K=double, V=thrust::detail::device::cuda::detail::b40c_thrust::KeysOnlyType]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(65): here
+            instantiation of "void thrust::detail::device::cuda::detail::stable_radix_sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::detail::normal_iterator<thrust::device_ptr<double>>]" 
+./thrust/detail/device/cuda/detail/stable_radix_sort_merrill.inl(60): here
+            instantiation of "void thrust::detail::device::cuda::detail::stable_radix_sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::device_ptr<double>]" 
+./thrust/detail/device/cuda/sort.inl(268): here
+            instantiation of "void thrust::detail::device::cuda::first_dispatch::stable_sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering, thrust::detail::true_type) [with RandomAccessIterator=thrust::device_ptr<double>, StrictWeakOrdering=thrust::less<double>]" 
+./thrust/detail/device/cuda/sort.inl(388): here
+            [ 5 instantiation contexts not shown ]
+            instantiation of "void thrust::sort(RandomAccessIterator, RandomAccessIterator, StrictWeakOrdering) [with RandomAccessIterator=thrust::device_ptr<double>, StrictWeakOrdering=thrust::less<double>]" 
+./thrust/detail/sort.inl(42): here
+            instantiation of "void thrust::sort(RandomAccessIterator, RandomAccessIterator) [with RandomAccessIterator=thrust::device_ptr<double>]" 
+iterativeSMOSTimingFunctions.cu(61): here
+            instantiation of "results_t<T> *timeSortAndChooseMultiselect(T *, uint, uint *, uint) [with T=double]" 
+compareIterativeSMOS.hpp(73): here
+            instantiation of "void CompareIterativeSMOS::compareMultiselectAlgorithms(uint, uint *, uint, uint, uint *, uint, uint, char *, T *) [with T=double]" 
+compareIterativeSMOS.hpp(259): here
+            instantiation of "void CompareIterativeSMOS::runTests<T>(uint, char *, uint, uint, uint, uint, uint, uint, uint) [with T=double]" 
+compareIterativeSMOS.cu(98): here
+
+2 errors detected in the compilation of "compareIterativeSMOS.cu".
+furuizhe@bellman:IterativeSMOS$ 

@@ -79,7 +79,7 @@ results_t<T>* timeSortAndChooseMultiselect(T * h_vec, uint numElements, uint * k
 
   copyInChunk<T><<<blocks, threads>>>(d_output, d_vec, d_kList, kCount, numElements);
   cudaMemcpy (result->vals, d_output, kCount * sizeof (T), cudaMemcpyDeviceToHost);
-
+//••••••••••••••••••••••
   //printf("first result: %u \n", result->vals);
 
   cudaFree(d_output);
@@ -111,6 +111,8 @@ results_t<T>* timeBucketMultiselect (T * h_vec, uint numElements, uint * kVals, 
 
   // bucketMultiselectWrapper (T * d_vector, int length, uint * kVals_ori, uint kCount, T * outputs, int blocks, int threads)
   BucketMultiselect::bucketMultiselectWrapper(d_vec, numElements, kVals, kCount, result->vals, dp.multiProcessorCount, dp.maxThreadsPerBlock);
+
+  printf("BMS");
  
   cudaEventRecord(stop, 0);
   cudaEventSynchronize(stop);
@@ -139,6 +141,8 @@ results_t<T>* timeNaiveBucketMultiselect (T * h_vec, uint numElements, uint * kV
   for (int i = 0; i < kCount; i++)
     cudaMemcpy(result->vals + i, d_vec + (numElements - kVals[i]), sizeof (T), cudaMemcpyDeviceToHost);
    
+
+  printf("hello");
   cudaEventRecord(stop, 0);
   cudaEventSynchronize(stop);
   cudaEventElapsedTime(&time, start, stop);

@@ -40,7 +40,6 @@
 #include "cp_select.cu"
 #include "merrillSelect.cu"
 #include "bucketSelect.cu"
-#include "randomizedSelect.cu"
 #include "randomizedBucketSelect.cu"
 #include "noExtremaRandomizedBucketSelect.cu"
 

@@ -110,7 +110,7 @@ __global__ void createVector(float* input, int length, int firstVal, int numFirs
     for(i=idx; i< numFirstVal; i+=offset){
       input[i] = firstVal;
     }
-    syncthreads();
+    __syncthreads();
 
     for(i=idx; i< (numFirstVal + numSecondVal); i+=offset){
       if(i >= numFirstVal){

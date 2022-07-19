@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <fstream>
+#include <unistd.h>
 #include <sys/time.h>
 
 #include <algorithm>

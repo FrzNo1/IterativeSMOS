@@ -113,7 +113,7 @@ namespace RandomizedBucketSelect{
       if(threadIndex < numPivots-1) 
         sharedSlopes[threadIndex] = slopes[threadIndex];
     }
-    syncthreads();
+    __syncthreads();
 
     //assigning elements to buckets and incrementing the bucket counts
     if(index < length) {
@@ -143,7 +143,7 @@ namespace RandomizedBucketSelect{
       }
     }
     
-    syncthreads();
+    __syncthreads();
 
     //reading bucket counts from shared memory back to global memory
     for (int i = 0; i < (numBuckets / MAX_THREADS_PER_BLOCK); i++) 
@@ -171,7 +171,7 @@ namespace RandomizedBucketSelect{
     for(int i=0; i < (bucketNumbers/1024); i++) 
       if(index < bucketNumbers) 
         sharedBuckets[i*1024+index] = 0;
-    syncthreads();
+    __syncthreads();
 
     //assigning elements to buckets and incrementing the bucket counts
     if(idx < length)    {
@@ -189,7 +189,7 @@ namespace RandomizedBucketSelect{
       }
     }
 
-    syncthreads();
+    __syncthreads();
 
     //reading bucket counts from shared memory back to global memory
     for(int i=0; i < (bucketNumbers/1024); i++) 
@@ -209,7 +209,7 @@ namespace RandomizedBucketSelect{
     if(index < bucketNumbers){
       sharedBuckets[index] =0;
     }
-    syncthreads();
+    __syncthreads();
 
     //assigning elements to buckets and incrementing the bucket counts
     if (idx < length){
@@ -234,7 +234,7 @@ namespace RandomizedBucketSelect{
       }
     }
 
-    syncthreads();
+    __syncthreads();
 
     //reading bucket counts from shared memory back to global memory
     if(index < bucketNumbers){
@@ -306,7 +306,7 @@ namespace RandomizedBucketSelect{
       sharedBucketCount = d_bucketCount[blockIdx.x * numTotalBuckets + bucket];
     }
 
-    syncthreads();
+    __syncthreads();
 
 
     if(idx < length) {
