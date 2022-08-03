@@ -5,35 +5,171 @@
 #include <thrust/functional.h>
 #include <thrust/random.h>
 #include <thrust/sort.h>
-#include <thrust/execution_policy.h>
 #include <thrust/scan.h>
 #include <thrust/transform_reduce.h>
 #include <limits>
 #include <math.h>
-#include <time.h>
 #include <sys/time.h>
-
-//#define SAFE
-
+#include <time.h>
 
 namespace IterativeSMOS {
     using namespace std;
 
 
-
+#define SAFE
 #define MAX_THREADS_PER_BLOCK 1024
 #define CUDA_CALL(x) do { if((x) != cudaSuccess) {      \
       printf("Error at %s:%d\n",__FILE__,__LINE__);     \
       return EXIT_FAILURE;}} while(0)
 
+    /// ***********************************************************
+    /// ***********************************************************
+    /// **** HELPER SAFE FUNCTIONS
+    /// ***********************************************************
+    /// ***********************************************************
+    // ************** SAFETY ERROR CHECK FUNCTIONS *************
+
+
+    void check_malloc_int(int *pointer, const char *message)
+    {
+        if ( pointer == NULL ) {
+            printf("Malloc failed for %s.\n", message);
+        }
+    }
+
+    void check_malloc_float(float *pointer, const char *message)
+    {
+        if ( pointer == NULL ) {
+            printf("Malloc failed for %s.\n", message);
+        }
+    }
+
+    void check_malloc_double(double *pointer, const char *message)
+    {
+        if ( pointer == NULL ) {
+            printf("Malloc failed for %s.\n", message);
+        }
+    }
+
+    void check_cudaMalloc(const char *message)
+    {
+        cudaError_t status = cudaGetLastError();
+        if (status != cudaSuccess) {
+            fprintf(stderr, "Error: cudaMalloc failed for %s: %d\n", message, status);
+        }
+    }
+
+    void Check_CUDA_Error(const char *message)
+    {
+        cudaError_t error = cudaGetLastError();
+        if (error != cudaSuccess) {
+            fprintf(stderr, "Error: %s: %s\n", message, cudaGetErrorString(error) );
+            exit(-1);
+        }
+    }
+
+    /*
+    void Check_CUBLAS_Error(const char *message)
+    {
+        cublasStatus status = cublasGetError();
+        if (status != CUBLAS_STATUS_SUCCESS) {
+            fprintf (stderr, "Error: %s: %d\n", message, status);
+            exit(-1);
+        }
+    }
+     */
+
+    /*
+
+    void Check_CURAND_Error(curandStatus_t curandCheck, const char *message)
+    {
+        if (curandCheck != CURAND_STATUS_SUCCESS) {
+            fprintf (stderr, "Error: %s: %d\n", message, curandCheck);
+            exit(-1);
+        }
+    }
+
+     */
 
 
 
-    /// ***********************************************************
-    /// ***********************************************************
-    /// **** Safety FUNCTIONS
-    /// ***********************************************************
-    /// ***********************************************************
+    void check_cudaMalloc2(cudaError_t status, const char *message)
+    {
+        if (status != cudaSuccess) {
+            fprintf(stderr, "Error: cudaMalloc failed for %s: %d\n", message, status);
+        }
+    }
+
+
+
+
+// ************** SAFETY ERROR CHECK WRAPPERS TO BE USED IN CODE *************
+
+
+
+    inline void SAFEcudaMalloc2(cudaError_t status, const char *message)
+    {
+#ifdef SAFE
+        check_cudaMalloc2(status, message);
+#endif
+    }
+
+
+
+    inline void SAFEcudaMalloc(const char *message)
+    {
+#ifdef SAFE
+        check_cudaMalloc(message);
+#endif
+    }
+
+    inline void SAFEcuda(const char *message)
+    {
+#ifdef SAFE
+        Check_CUDA_Error(message);
+#endif
+    }
+
+    /*
+    inline void SAFEcublas(const char *message)
+    {
+#ifdef SAFE
+        Check_CUBLAS_Error(message);
+#endif
+    }
+     */
+
+    /*
+
+    inline void SAFEcurand(curandStatus_t curandCheck, const char *message)
+    {
+#ifdef SAFE
+        Check_CURAND_Error(curandCheck, message);
+#endif
+    }
+
+     */
+
+    inline void SAFEmalloc_int(int * pointer, const char *message)
+    {
+#ifdef SAFE
+        check_malloc_int(pointer, message);
+#endif
+    }
+
+    inline void SAFEmalloc_float(float *pointer, const char *message)
+    {
+#ifdef SAFE
+        check_malloc_float(pointer, message);
+#endif
+    }
+
+    inline void SAFEmalloc_double(double *pointer, const char *message)
+    {
+#ifdef SAFE
+        check_malloc_double(pointer, message);
+#endif
+    }
 
 
 
@@ -60,7 +196,7 @@ namespace IterativeSMOS {
        sums : sum-so-far of the number of elements in the buckets where k values fall into
     */
     inline int findKBuckets(unsigned int * d_bucketCount, unsigned int * h_bucketCount, int numBuckets
-            , unsigned int * kVals, int numKs, unsigned int * sums, unsigned int * markedBuckets
+            , const unsigned int * kVals, int numKs, unsigned int * sums, unsigned int * markedBuckets
             , int numBlocks) {
         // consider the last row which holds the total counts
         int sumsRowIndex= numBuckets * (numBlocks-1);
@@ -72,7 +208,7 @@ namespace IterativeSMOS {
         int k;
         int sum = h_bucketCount[0];
 
-        for(register int i = 0; i < numKs; i++) {
+        for(int i = 0; i < numKs; i++) {
             k = kVals[i];
             while ((sum < k) & (kBucket < numBuckets - 1)) {
                 kBucket++;
@@ -85,6 +221,15 @@ namespace IterativeSMOS {
         return 0;
     }
 
+    /*
+     * This function updates the correct kth orderstats if the bin only contains one element. While going through the
+     * list of orderstats, it updates K since we have reduced the problem size to elements in the kth bucket. In
+     * addition, it updates the unique buckets list to avoid the situation where two order share the same buckets.
+     *
+     * kthBucketScanner:  sum-so-far of the number of elements in the buckets where k values fall into
+     * uniqueBuckets:  the list to store all buckets which are active with no repeats
+     * tempKorderBucket:  buckets which have only one element. That is, the bucket with correct kth orderstats
+     */
     template <typename T>
     inline int updatekVals_iterative(unsigned int * kVals, int * numKs, T * output, unsigned int * kIndicies,
                                      int * length, int * lengthOld, unsigned int * h_bucketCount, unsigned int * markedBuckets,
@@ -99,6 +244,7 @@ namespace IterativeSMOS {
         *lengthOld = *length;
         *tempKorderLength = 0;
 
+        // go through the markedbucket list. If there is only one element in array, we update it to tempKorderBucket
         while (index < *numKs) {
             if (h_bucketCount[markedBuckets[index]] == 1) {
                 tempKorderIndeces[*tempKorderLength] = kIndicies[index];
@@ -111,6 +257,8 @@ namespace IterativeSMOS {
             break;
         }
 
+        // get the index of the first buckets with more than one elements in it
+        // add the number of elements and updates correct kth order
         if (index < *numKs) {
             uniqueBuckets[0] = markedBuckets[index];
             uniqueBucketCounts[0] = h_bucketCount[markedBuckets[index]];
@@ -122,8 +270,11 @@ namespace IterativeSMOS {
             index++;
         }
 
+        // go through the markedbuckets list. If there is only one element in that bucket, updates it to
+        // tempKorderBucket; if there is more than one, updates it to uniqueBucket
         for ( ; index < *numKs; index++) {
 
+            // case if there is only one element
             if (h_bucketCount[markedBuckets[index]] == 1) {
                 tempKorderIndeces[*tempKorderLength] = kIndicies[index];
                 tempKorderBucket[*tempKorderLength] = markedBuckets[index];
@@ -131,28 +282,34 @@ namespace IterativeSMOS {
                 continue;
             }
 
+            // case if the there is more than one element in the bucket and the bucket is not repeat with last one
             if (markedBuckets[index] != uniqueBuckets[(*numUniqueBuckets) - 1]) {
                 uniqueBuckets[*numUniqueBuckets] = markedBuckets[index];
                 uniqueBucketCounts[*numUniqueBuckets] = h_bucketCount[markedBuckets[index]];
                 reindexCounter[*numUniqueBuckets] = reindexCounter[(*numUniqueBuckets) - 1]
-                                                    + h_bucketCount[markedBuckets[numKsindex - 1]];
+                                                    + uniqueBucketCounts[(*numUniqueBuckets) - 1];
                 (*numUniqueBuckets)++;
             }
+
+            // update korder
             kVals[numKsindex] = reindexCounter[(*numUniqueBuckets) - 1] + kVals[index] - kthBucketScanner[index];
             kIndicies[numKsindex] = kIndicies[index];
             numKsindex++;
         }
 
+        // update numKs and length of vector
         *numKs = numKsindex;
-
         if (*numKs > 0)
-            *length = reindexCounter[(*numUniqueBuckets) - 1] + h_bucketCount[markedBuckets[numKsindex - 1]];
+            *length = reindexCounter[(*numUniqueBuckets) - 1] + uniqueBucketCounts[(*numUniqueBuckets) - 1];
 
 
         return 0;
     }
 
-    template <typename T>	
+    /*
+     * This function swap pointers for the two lists
+     */
+    template <typename T>
     void swapPointers(T** a, T** b) {
         T * temp = * a;
         * a = * b;
@@ -169,7 +326,11 @@ namespace IterativeSMOS {
 
 
     /*
+     * This function generate new buckets offset and slopes by giving the new pivots and number of elements in
+     * that buckets
      *
+     * pivotsLeft & pivotsRight:  the bounds of elements for each bucket
+     * kthnumBuckets:  array to store bucket offset.
      */
     template <typename T>
     __global__ void generateBucketsandSlopes_iterative (T * pivotsLeft, T * pivotsRight, double * slopes,
@@ -186,32 +347,29 @@ namespace IterativeSMOS {
                 kthnumBuckets[i] = max(uniqueBucketsCounts[i] * numBuckets / length ,2);
 
                 // assign slope
-                slopes[i] = (double) kthnumBuckets[i] / (double) (pivotsRight[i] - pivotsLeft[i]);  // potential problems, last number
-                // will not go into the bucket
+                slopes[i] = (double) kthnumBuckets[i] / (double) (pivotsRight[i] - pivotsLeft[i]);
             }
         }
 
         __syncthreads();
 
-
-
         // Assign bucket number and slope to the last active buckets
         if (index < 1) {
-            // exclusive cumulative sum to the kthnumbuckets for finding the correct number of buckets for the last active buckets
-            // thrust::exclusive_scan(thrust::host, kthnumBuckets, kthnumBuckets + numUniqueBuckets, kthnumBuckets, 0);
+            // exclusive cumulative sum to the kthnumbuckets for finding the correct number of buckets
+            // for the last active buckets
+            // thrust::exclusive_scan(thrust::device, kthnumBuckets, kthnumBuckets + numUniqueBuckets, kthnumBuckets, 0);
 
-            // my own version of exclusive scan
-	    if (numUniqueBuckets > 1) {
-		for (int i = 1; i < numUniqueBuckets - 1; i++) {
-		    kthnumBuckets[i] += kthnumBuckets[i - 1];
-		}
+            if (numUniqueBuckets > 1) {
+                for (int i = 1; i < numUniqueBuckets; i++) {
+                    kthnumBuckets[i] += kthnumBuckets[i - 1];
+                }
 
-		for (int i = numUniqueBuckets - 1; i > 0; i--) {
-		    kthnumBuckets[i] = kthnumBuckets[i - 1];
-		}
-	    }
+                for (int i = numUniqueBuckets - 1; i > 0; i--) {
+                    kthnumBuckets[i] = kthnumBuckets[i - 1];
+                }
+            }
 
-	    kthnumBuckets[0] = 0;
+            kthnumBuckets[0] = 0;
             // bucket number is assigned automatically
 
             // assign slope
@@ -238,12 +396,32 @@ namespace IterativeSMOS {
         unsigned int bucketIndex;
         int threadIndex = threadIdx.x;
 
+        /*
+        if (index == 1) {
+            printf("assignmentSmartBucket in kernel\n\n");
+        }
+         */
+
+
         //variables in shared memory for fast access
         extern __shared__ unsigned int array[];
         double * sharedSlopes = (double *)array;
         T * sharedPivotsLeft = (T *)&sharedSlopes[numUniqueBuckets];
         unsigned int * sharedkthNumBuckets = (unsigned int *)&sharedPivotsLeft[numUniqueBuckets];
         unsigned int * sharedBuckets = (unsigned int *)&sharedkthNumBuckets[numUniqueBuckets];
+
+        /*
+        if (index < 1) {
+            printf("executed to phase 0\n\n");
+            /*
+            for (int bb=0; bb < 16; bb++) {
+                printf("bb=%d, vec=%d, elemtobuck=%d, slopes=%lf buckCout=%d, pleft=%d, pright=%d \n ", bb, d_vector[bb], d_elementToBucket[bb],slopes[bb], d_bucketCount[bb], pivotsLeft[bb], pivotsRight[bb]);
+            }
+
+            printf("\n \n \n");
+
+        }
+        */
 
         //reading bucket counts into shared memory where increments will be performed
         for (int i = 0; i < (numBuckets / MAX_THREADS_PER_BLOCK); i++) {
@@ -252,20 +430,57 @@ namespace IterativeSMOS {
                 sharedBuckets[i * MAX_THREADS_PER_BLOCK + threadIndex] = 0;
         }
 
+        /*
+        //    if (index < length) {
+        if (index < 1)
+            printf("executed to phase 1\n\n");
+            */
+
 
         if (threadIndex < numUniqueBuckets) {
             sharedPivotsLeft[threadIndex] = pivotsLeft[threadIndex];
             sharedSlopes[threadIndex] = slopes[threadIndex];
             sharedkthNumBuckets[threadIndex] = kthNumBuckets[threadIndex];
+            //printf("PL=%d, Slps=%lf, kNumB=%d \n", pivotsLeft[threadIndex], slopes[threadIndex], kthNumBuckets[threadIndex]);
+            //printf("sPL=%d, sSlps=%lf, skNumB=%d \n", sharedPivotsLeft[threadIndex], sharedSlopes[threadIndex], sharedkthNumBuckets[threadIndex]);
         }
+
+        /*
+        if (index < 1)
+            printf("executed to phase 2\n\n");
+
+        //       if (index < length)
+        //         printf("index=%d, length=%d, numUniqueBuckets=%d, offset=%d \n", index, length, numUniqueBuckets, offset);
+         */
 
         __syncthreads();
 
+        /*
+        if (index < 1)
+            printf("executed to phase 3\n\n");
+            */
+
+
         //assigning elements to buckets and incrementing the bucket counts
         if (index < length) {
-
             for (int i = index; i < length; i += offset) {
                 T num = d_vector[i];
+                int pivotIndex;
+
+                // potential to change it to binary search to be faster
+                if (num >= sharedPivotsLeft[numUniqueBuckets - 1]) {
+                    pivotIndex = numUniqueBuckets - 1;
+                }
+                else {
+                    for (int j = 0; j < numUniqueBuckets - 1; j++) {
+                        if (num >= sharedPivotsLeft[j] && num < sharedPivotsLeft[j + 1]) {
+                            pivotIndex = j;
+                            break;
+                        }
+                    }
+                }
+
+                /*
                 int minPivotIndex = 0;
                 int maxPivotIndex = numUniqueBuckets - 1;
                 int midPivotIndex;
@@ -284,23 +499,39 @@ namespace IterativeSMOS {
                             maxPivotIndex = midPivotIndex;
                     }
                 }
+                 */
 
-                bucketIndex = sharedkthNumBuckets[minPivotIndex]
-                              + (int) (((double)num - (double)sharedPivotsLeft[minPivotIndex])
-                                       * sharedSlopes[minPivotIndex]);
+                bucketIndex = sharedkthNumBuckets[pivotIndex]
+                              + (int) (((double)num - (double)sharedPivotsLeft[pivotIndex])
+                                       * sharedSlopes[pivotIndex]);
 
-                for (int j = 0; j < numUniqueBuckets; j++) {
-                    if (num == pivotsRight[j]) {
-                        bucketIndex--;
-                        break;
+
+                // potential to remove the for loop
+                if (sharedPivotsLeft[pivotIndex] != pivotsRight[pivotIndex]) {
+                    if (bucketIndex >= numBuckets) {
+                        bucketIndex = numBuckets - 1;
                     }
-
+                    else if (pivotIndex < numUniqueBuckets - 1) {
+                        if (bucketIndex >= sharedkthNumBuckets[pivotIndex + 1]) {
+                            bucketIndex = sharedkthNumBuckets[pivotIndex + 1] - 1;
+                        }
+                    }
                 }
 
                 d_elementToBucket[i] = bucketIndex;
                 atomicInc(sharedBuckets + bucketIndex, length);
+
+                //             printf("%d, %d;  ", d_vector[i], d_elementToBucket[i]);
             }
         }
+
+        /*
+        if (index < 1)
+            printf("executed to phase 4\n\n");
+            */
+
+
+        //    } // closes the if (index < max(length))
 
         __syncthreads();
 
@@ -310,7 +541,13 @@ namespace IterativeSMOS {
                 *(d_bucketCount + blockIdx.x * numBuckets
                   + i * MAX_THREADS_PER_BLOCK + threadIndex) =
                         *(sharedBuckets + i * MAX_THREADS_PER_BLOCK + threadIndex);
-    }
+
+        /*
+        if (index < 1)
+            printf("executed to phase 5\n\n");
+            */
+
+    } // closes the kernel
 
     /* This function cumulatively sums the count of every block for a given bucket s.t. the
        last block index holds the total number of elements falling into that bucket all over the
@@ -372,6 +609,17 @@ namespace IterativeSMOS {
 
             for (int i = index; i < lengthOld; i += offset) {
                 unsigned int temp = elementToBuckets[i];
+
+                for (int j = 0; j < numUniqueBuckets; j++) {
+                    if (temp == sharedBuckets[j]) {
+                        d_newvector[atomicDec(d_bucketCount + blockIdx.x * numBuckets
+                                              + sharedBuckets[j], lengthOld) - 1] = d_vector[i];
+                        break;
+                    }
+                }
+
+
+                /*
                 int minBucketIndex = 0;
                 int maxBucketIndex = numUniqueBuckets - 1;
                 int midBucketIndex;
@@ -387,6 +635,7 @@ namespace IterativeSMOS {
                 if (temp == sharedBuckets[maxBucketIndex])
                     d_newvector[atomicDec(d_bucketCount + blockIdx.x * numBuckets
                                           + sharedBuckets[maxBucketIndex], lengthOld) - 1] = d_vector[i];
+                */
             }
         }
 
@@ -408,8 +657,25 @@ namespace IterativeSMOS {
         if (index < numUniqueBuckets) {
             for (int i = index; i < numUniqueBuckets; i += offset) {
 
-                // perform binary search to find kthNumBucket that is greatest s.t. lower than or equal to the bucket
                 unsigned int bucket = uniqueBuckets[i];
+                unsigned int bucketIndex;
+
+                // potential to change to binary search to make it faster
+                if (bucket >= kthnumBuckets[numUniqueBucketsOld - 1]) {
+                    bucketIndex = numUniqueBucketsOld - 1;
+                }
+                else {
+                    for (int j = 0; j < numUniqueBucketsOld - 1; j++) {
+                        if (bucket >= kthnumBuckets[j] && bucket < kthnumBuckets[j + 1]) {
+                            bucketIndex = j;
+                            break;
+                        }
+                    }
+                }
+
+
+                /*
+                // // perform binary search to find kthNumBucket that is greatest s.t. lower than or equal to the bucket
                 int minBucketIndex = 0;
                 int maxBucketIndex = numUniqueBucketsOld - 1;
                 int midBucketIndex;
@@ -426,18 +692,36 @@ namespace IterativeSMOS {
                             maxBucketIndex = midBucketIndex;
                     }
                 }
-
-                d_newPivotsLeft[i] = d_pivotsLeft[minBucketIndex] +
-                                     (T)(((double)(bucket - kthnumBuckets[minBucketIndex])) / slopes[minBucketIndex]);
-                d_newPivotsRight[i] = d_pivotsLeft[minBucketIndex] +
-                                      (T)(((double)(bucket - kthnumBuckets[minBucketIndex] + 1)) / slopes[minBucketIndex]);
+                */
+                long double invslope=0.0;
+                if (slopes[bucketIndex] == (double)0) {
+                    d_newPivotsLeft[i] = d_pivotsLeft[bucketIndex];
+                    d_newPivotsRight[i] = d_pivotsLeft[bucketIndex];
+                }
+                else {
+                    invslope = 1/((long double) slopes[bucketIndex]);
+                    d_newPivotsLeft[i] = (T)((long double) d_pivotsLeft[bucketIndex] +
+                                            (((long double) (bucket - kthnumBuckets[bucketIndex])) * invslope)); // / slopes[bucketIndex]));
+                    d_newPivotsRight[i] = (T) ((long double)d_pivotsLeft[bucketIndex] +
+                                             (((long double) (bucket - kthnumBuckets[bucketIndex] + 1) * invslope)));
+//                                               slopes[bucketIndex]));
+                } 
+/*                else {
+                    invslope = 1/((double) slopes[bucketIndex]);
+                    d_newPivotsLeft[i] = d_pivotsLeft[bucketIndex] +
+                                         (T) (((double) (bucket - kthnumBuckets[bucketIndex]))  / slopes[bucketIndex]);
+                    d_newPivotsRight[i] = d_pivotsLeft[bucketIndex] +
+                                          (T) (((double) (bucket - kthnumBuckets[bucketIndex] + 1)) / slopes[bucketIndex]);
+                }  */
             }
         }
 
         // needs to swap pointers of pivotsLeft with newPivotsLeft, pivotsRight with newPivotsRight
     }
 
-
+    /*
+     * This function finds the actual element for the kth orderstats by giving the list of buckets
+     */
     template <typename T>
     __global__ void updateOutput_iterative (T * d_vector, unsigned int * d_elementToBucket, int lengthOld, T * d_tempOutput,
                                             unsigned int * d_tempKorderBucket, int tempKorderLength, int offset){
@@ -513,7 +797,7 @@ namespace IterativeSMOS {
 
         gettimeofday(&t1, NULL);
         seed = t1.tv_usec * t1.tv_sec;
-        // seed = 10;
+        // seed = 1000000000;
 
         thrust::device_ptr<T> d_ptr(d_vec);
         thrust::transform (thrust::counting_iterator<unsigned int>(0),
@@ -532,10 +816,80 @@ namespace IterativeSMOS {
                 *(list + ((int) (*(in + blockIdx.x * blockDim.x + threadIdx.x) * size)));
     }
 
+    __global__ void enlargeIndexAndGetElements (float * in, int * out, int * list, int size) {
+        *(out + blockIdx.x * blockDim.x + threadIdx.x) =
+                (int) *(list + ((int) (*(in + blockIdx.x * blockDim.x + threadIdx.x) * size)));
+    }
+
+
     __global__ void enlargeIndexAndGetElements (float * in, unsigned int * out, unsigned int * list, int size) {
         *(out + blockIdx.x * blockDim.x + threadIdx.x) =
                 (unsigned int) *(list + ((int) (*(in + blockIdx.x * blockDim.x + threadIdx.x) * size)));
     }
+
+
+
+    /* This function generates Pivots from the random sampled data and calculates slopes.
+
+       pivots - arrays of pivots
+       slopes - array of slopes
+    */
+    template <typename T>
+    void generatePivots (int * pivots, double * slopes, int * d_list, int sizeOfVector
+            , int numPivots, int sizeOfSample, int totalSmallBuckets, int min, int max) {
+
+        float * d_randomFloats;
+        int * d_randomInts;
+        int endOffset = 22;
+        int pivotOffset = (sizeOfSample - endOffset * 2) / (numPivots - 3);
+        int numSmallBuckets = totalSmallBuckets / (numPivots - 1);
+
+        cudaMalloc (&d_randomFloats, sizeof (float) * sizeOfSample);
+
+        d_randomInts = (int *) d_randomFloats;
+
+        createRandomVector (d_randomFloats, sizeOfSample);
+
+        // converts randoms floats into elements from necessary indices
+        enlargeIndexAndGetElements<<<(sizeOfSample/MAX_THREADS_PER_BLOCK)
+        , MAX_THREADS_PER_BLOCK>>>(d_randomFloats, d_randomInts, d_list,
+                                   sizeOfVector);
+
+
+
+        pivots[0] = min;
+        pivots[numPivots-1] = max;
+
+        thrust::device_ptr<T>randoms_ptr(d_randomInts);
+        thrust::sort(randoms_ptr, randoms_ptr + sizeOfSample);
+
+        cudaThreadSynchronize();
+
+        // set the pivots which are next to the min and max pivots using the random element
+        // endOffset away from the ends
+        cudaMemcpy (pivots + 1, d_randomInts + endOffset - 1, sizeof (int)
+                , cudaMemcpyDeviceToHost);
+        cudaMemcpy (pivots + numPivots - 2, d_randomInts + sizeOfSample - endOffset - 1,
+                    sizeof (int), cudaMemcpyDeviceToHost);
+        slopes[0] = numSmallBuckets / (double) (pivots[1] - pivots[0]);
+
+        for (int i = 2; i < numPivots - 2; i++) {
+            cudaMemcpy (pivots + i, d_randomInts + pivotOffset * (i - 1) + endOffset - 1,
+                        sizeof (int), cudaMemcpyDeviceToHost);
+            slopes[i - 1] = numSmallBuckets / (double) (pivots[i] - pivots[i - 1]);
+        }
+
+        // printf("\n\n\n\n%d %d %d %d %d\n\n\n\n", pivots[0], pivots[4], pivots[7], pivots[10], pivots[16]);
+
+        slopes[numPivots - 3] = numSmallBuckets /
+                                (double) (pivots[numPivots - 2] - pivots[numPivots - 3]);
+        slopes[numPivots - 2] = numSmallBuckets /
+                                (double) (pivots[numPivots - 1] - pivots[numPivots - 2]);
+
+        cudaFree(d_randomFloats);
+    }
+
+
 
 
 
@@ -565,6 +919,8 @@ namespace IterativeSMOS {
         , MAX_THREADS_PER_BLOCK>>>(d_randomFloats, d_randomInts, d_list,
                                    sizeOfVector);
 
+
+
         pivots[0] = min;
         pivots[numPivots-1] = max;
 
@@ -581,11 +937,13 @@ namespace IterativeSMOS {
                     sizeof (unsigned int), cudaMemcpyDeviceToHost);
         slopes[0] = numSmallBuckets / (double) (pivots[1] - pivots[0]);
 
-        for (register int i = 2; i < numPivots - 2; i++) {
+        for (int i = 2; i < numPivots - 2; i++) {
             cudaMemcpy (pivots + i, d_randomInts + pivotOffset * (i - 1) + endOffset - 1,
                         sizeof (unsigned int), cudaMemcpyDeviceToHost);
             slopes[i - 1] = numSmallBuckets / (double) (pivots[i] - pivots[i - 1]);
         }
+
+        // printf("\n\n\n\n%d %d %d %d %d\n\n\n\n", pivots[0], pivots[4], pivots[7], pivots[10], pivots[16]);
 
         slopes[numPivots - 3] = numSmallBuckets /
                                 (double) (pivots[numPivots - 2] - pivots[numPivots - 3]);
@@ -626,7 +984,7 @@ namespace IterativeSMOS {
                     sizeof (T), cudaMemcpyDeviceToHost);
         slopes[0] = numSmallBuckets / ((double)pivots[1] - (double)pivots[0]);
 
-        for (register int i = 2; i < numPivots - 2; i++) {
+        for (int i = 2; i < numPivots - 2; i++) {
             cudaMemcpy (pivots + i, d_randoms + pivotOffset * (i - 1) + endOffset - 1,
                         sizeof (T), cudaMemcpyDeviceToHost);
             slopes[i - 1] = numSmallBuckets / ((double) pivots[i] - (double) pivots[i - 1]);
@@ -670,17 +1028,18 @@ namespace IterativeSMOS {
         thrust::pair<thrust::device_ptr<T>, thrust::device_ptr<T> > result =
                 thrust::minmax_element(dev_ptr, dev_ptr + length);
 
-        
         minimum = *result.first;
         maximum = *result.second;
 
         //if the max and the min are the same, then we are done
         if (maximum == minimum) {
-            for (register int i = 0; i < numKs; i++)
+            for (int i = 0; i < numKs; i++)
                 output[i] = minimum;
 
             return 1;
         }
+
+        SAFEcuda("End of STEP 1.1\n");
 
 
         /// ***********************************************************
@@ -698,7 +1057,12 @@ namespace IterativeSMOS {
         int sampleSize = 1024;
 
         // pivots variables
-        int numMemory = max(numKs, numPivots);
+        // potential to simplify
+        int numMemory;
+        if (numKs > numPivots)
+            numMemory = numKs;
+        else
+            numMemory = numPivots;  // replace this with max
 
         double * slopes = (double*)malloc(numMemory * sizeof(double));                  // size will be different
         double * d_slopes;
@@ -737,6 +1101,7 @@ namespace IterativeSMOS {
         // Allocate memory to store the new vector for kVals
         T * d_newvector;
         CUDA_CALL(cudaMalloc(&d_newvector, length * sizeof(T)));
+        T * addressOfd_newvector = d_newvector;
 
 
         // array of kth buckets
@@ -749,7 +1114,7 @@ namespace IterativeSMOS {
         unsigned int * d_kthBuckets;
         unsigned int * kthBucketScanner = (unsigned int *)malloc(numMemory * sizeof(unsigned int));
         unsigned int * d_kthBucketScanner;
-        unsigned int * kIndices = (unsigned int *)malloc(numMemory * sizeof(unsigned int));
+        unsigned int * kIndices = (unsigned int *)malloc(numKs * sizeof(unsigned int));
         unsigned int * d_kIndices;
         unsigned int * uniqueBuckets = (unsigned int *)malloc(numMemory * sizeof(unsigned int));
         unsigned int * d_uniqueBuckets;
@@ -766,7 +1131,7 @@ namespace IterativeSMOS {
         unsigned int * tempKorderIndeces = (unsigned int *)malloc(numMemory * sizeof(unsigned int));
         unsigned int * d_tempKorderIndeces;
         CUDA_CALL(cudaMalloc(&d_kVals, numMemory * sizeof(unsigned int)));
-        CUDA_CALL(cudaMalloc(&d_kIndices, numMemory * sizeof (unsigned int)));
+        CUDA_CALL(cudaMalloc(&d_kIndices, numKs * sizeof (unsigned int)));
         CUDA_CALL(cudaMalloc(&d_kthBuckets, numMemory * sizeof(unsigned int)));
         CUDA_CALL(cudaMalloc(&d_kthBucketScanner, numMemory * sizeof(unsigned int)));
         CUDA_CALL(cudaMalloc(&d_uniqueBuckets, numMemory * sizeof(unsigned int)));
@@ -777,10 +1142,16 @@ namespace IterativeSMOS {
         CUDA_CALL(cudaMalloc(&d_tempKorderBucket, numMemory * sizeof(unsigned int)));
         CUDA_CALL(cudaMalloc(&d_tempKorderIndeces, numMemory * sizeof(unsigned int)));
 
-        for (register int i = 0; i < numMemory; i++) {
+        for (int i = 0; i < numMemory; i++) {
             kthBucketScanner[i] = 0;
+            // kIndices[i] = i;
+        }
+
+        for (int i = 0; i < numKs; i++) {
             kIndices[i] = i;
         }
+
+        SAFEcuda("End of STEP 1.2\n");
 
 
         /// ***********************************************************
@@ -804,6 +1175,7 @@ namespace IterativeSMOS {
         CUDA_CALL(cudaMemcpy(kVals, d_kVals, numKs * sizeof (unsigned int),
                              cudaMemcpyDeviceToHost));
 
+        /*
         int kMaxIndex = numKs - 1;
         int kOffsetMax = 0;
         while (kVals[kMaxIndex] == length) {
@@ -821,6 +1193,21 @@ namespace IterativeSMOS {
             numKs--;
             kOffsetMin++;
         }
+         */
+
+
+
+        /*
+        //display information
+        printf("Before entering the loop\n");
+        printf("vector length: %d, kVals length: %d\n", length, numKs);
+        printf("\n");
+         */
+
+
+        SAFEcuda("End of STEP 1.3\n");
+
+
 
 
         /// ***********************************************************
@@ -828,15 +1215,18 @@ namespace IterativeSMOS {
         /// ****  Declare and Generate Pivots and Slopes
         /// ***********************************************************
 
+        // printf("%d, %d, %d, %d\n", pivots[0],pivots[7],pivots[11],pivots[16]);
+
         // Find bucket sizes using a randomized selection
         generatePivots<T>(pivots, slopes, d_vector, length, numPivots, sampleSize,
                           numBuckets, minimum, maximum);
 
+        // printf("%d, %d, %d, %d\n", pivots[0],pivots[7],pivots[11],pivots[16]);
 
         // make any slopes that were infinity due to division by zero (due to no
         //  difference between the two associated pivots) into zero, so all the
         //  values which use that slope are projected into a single bucket
-        for (register int i = 0; i < numPivots - 1; i++)
+        for (int i = 0; i < numPivots - 1; i++)
             if (isinf(slopes[i]))
                 slopes[i] = 0;
 
@@ -851,6 +1241,35 @@ namespace IterativeSMOS {
         numUniqueBuckets = numPivots - 1;
 
 
+
+
+        /*
+        //display information
+        printf("PivotsLeft: \n");
+        for (int i = 0; i < numUniqueBuckets; i++)
+            printf("%d, ", pivotsLeft[i]);
+        printf("\n");
+        printf("PivotsRight: \n");
+        for (int i = 0; i < numUniqueBuckets; i++)
+            printf("%d, ", pivotsRight[i]);
+        printf("\n");
+        printf("slopes: \n");
+        for (int i = 0; i < numUniqueBuckets; i++)
+            printf("%lf, ", slopes[i]);
+        printf("\n");
+        printf("kthnumBuckets: \n");
+        for (int i = 0; i < numUniqueBuckets; i++)
+            printf("%d, ", kthnumBuckets[i]);
+        printf("\n");
+        printf("\n");
+         */
+
+
+
+
+
+
+
         CUDA_CALL(cudaMemcpy(d_slopes, slopes, (numPivots - 1) * sizeof(double),
                              cudaMemcpyHostToDevice));
         CUDA_CALL(cudaMemcpy(d_pivotsLeft, pivotsLeft, numUniqueBuckets * sizeof(T),
@@ -860,17 +1279,24 @@ namespace IterativeSMOS {
         CUDA_CALL(cudaMemcpy(d_kthnumBuckets, kthnumBuckets, numUniqueBuckets * sizeof(unsigned int),
                              cudaMemcpyHostToDevice));
 
+        SAFEcuda("End of STEP 2\n");
+
 
 
         /// ***********************************************************
         /// **** STEP 3: AssignBuckets
         /// **** Using the function assignSmartBucket
         /// ***********************************************************
+
+
         assignSmartBucket_iterative<T><<<numBlocks, threadsPerBlock, numUniqueBuckets * sizeof(T) +
-                                      numUniqueBuckets * sizeof(double) + numUniqueBuckets * sizeof(unsigned int) +
-                                      numBuckets * sizeof(unsigned int)>>>
-                                      (d_vector, length, d_elementToBucket, d_slopes, d_pivotsLeft, d_pivotsRight,
-                                       d_kthnumBuckets, d_bucketCount, numUniqueBuckets, numBuckets, offset);
+                                                                     numUniqueBuckets * sizeof(double) + numUniqueBuckets * sizeof(unsigned int) +
+                                                                     numBuckets * sizeof(unsigned int)>>>
+        (d_vector, length, d_elementToBucket, d_slopes, d_pivotsLeft, d_pivotsRight,
+                d_kthnumBuckets, d_bucketCount, numUniqueBuckets, numBuckets, offset);
+
+
+        SAFEcuda("End of STEP 3\n");
 
 
         /// ***********************************************************
@@ -881,11 +1307,68 @@ namespace IterativeSMOS {
 
         sumCounts<<<numBuckets/threadsPerBlock, threadsPerBlock>>>(d_bucketCount, numBuckets, numBlocks);
 
+        SAFEcuda("STEP 4, after sumCounts\n");
+
         findKBuckets(d_bucketCount, h_bucketCount, numBuckets, kVals, numKs, kthBucketScanner, kthBuckets, numBlocks);
 
+        SAFEcuda("STEP 4, after findKBuckets");
+
+
+
+        /*
+        //display information
+        printf("numKs: %d\n", numKs);
+        //printf("h_bucketCount:\n");
+        //for (int i = 0; i < numBuckets; i++)
+        //  printf("%d, ", h_bucketCount[i]);
+        //printf("\n");
+        printf("kthBuckets: \n");
+        for (int i = 0; i < numKs; i++)
+            printf("%d, ", kthBuckets[i]);
+        printf("\n");
+        printf("kthBucketsScanner: \n");
+        for (int i = 0; i < numKs; i++)
+            printf("%d, ", kthBucketScanner[i]);
+        printf("\n");
+        printf("\n");
+         */
+
+
+
+
+
+
         updatekVals_iterative<T>(kVals, &numKs, output, kIndices, &length, &lengthOld, h_bucketCount, kthBuckets, kthBucketScanner,
-                              reindexCounter, uniqueBuckets, uniqueBucketCounts, &numUniqueBuckets, &numUniqueBucketsOld,
-                              tempKorderBucket, tempKorderIndeces, &tempKorderLength);
+                                 reindexCounter, uniqueBuckets, uniqueBucketCounts, &numUniqueBuckets, &numUniqueBucketsOld,
+                                 tempKorderBucket, tempKorderIndeces, &tempKorderLength);
+
+        SAFEcuda("STEP 4, after updatekVals\n");
+
+
+
+
+
+        /*
+        //display information
+        printf("numKs: %d, length: %d, numUniqueBuckets: %d, tempKorderLength: %d\n", numKs, length, numUniqueBuckets, tempKorderLength);
+        printf("numUniqueBucketsOld: %d\n", numUniqueBucketsOld);
+        printf("uniqueBuckets:\n");
+        for (int i = 0; i < numUniqueBuckets; i++)
+            printf("%d, ", uniqueBuckets[i]);
+        printf("\n");
+        printf("uniqueBucketCounts:\n");
+        for (int i = 0; i < numUniqueBuckets; i++)
+            printf("%d, ", uniqueBucketCounts[i]);
+        printf("\n");
+        printf("reindexCounter:\n");
+        for (int i = 0; i < numUniqueBuckets; i++)
+            printf("%d, ", reindexCounter[i]);
+        printf("\n");
+        printf("\n");
+         */
+
+
+
 
         if (tempKorderLength > 0) {
             CUDA_CALL(cudaMemcpy(d_tempKorderBucket, tempKorderBucket, tempKorderLength * sizeof(unsigned int),
@@ -897,14 +1380,44 @@ namespace IterativeSMOS {
             updateOutput_iterative<<<numBlocks, threadsPerBlock>>>(d_vector, d_elementToBucket, lengthOld, d_tempOutput,
                                                                    d_tempKorderBucket, tempKorderLength, offset);
 
+            SAFEcuda("STEP 4, after updateOutput\n");
+
             CUDA_CALL(cudaMemcpy(tempOutput, d_tempOutput, tempKorderLength * sizeof(T),
                                  cudaMemcpyDeviceToHost));
 
             for (int i = 0; i < tempKorderLength; i++)
                 output[tempKorderIndeces[i]] = tempOutput[i];
-
         }
 
+
+
+        /*
+        // display information
+        printf("tempKorderIndeces: \n");
+        for (int i = 0; i < tempKorderLength; i++)
+            printf("%d, ", tempKorderIndeces[i]);
+        printf("\n");
+        printf("tempOutput: \n");
+        for (int i = 0; i < tempKorderLength; i++)
+            printf("%d, ", tempOutput[i]);
+        printf("\n");
+        printf("\n");
+
+        printf("LeftKorderIndeces: \n");
+        for (int i = 0; i < numKs; i++)
+            printf("%d, ", kIndices[i]);
+        printf("\n");
+        printf("LeftKorder: \n");
+        for (int i = 0; i < numKs; i++)
+            printf("%d, ", kVals[i]);
+        printf("\n");
+        printf("\n");
+         */
+
+
+        bool whetherEnterLoop = true;
+        if (numKs <= 0)
+            whetherEnterLoop = false;
 
 
 
@@ -915,9 +1428,11 @@ namespace IterativeSMOS {
         /// ***********************************************************
 
 
-        for (int j = 0; j < 4; j++) {
+        for (int j = 0; j < 40 && whetherEnterLoop; j++) {
 
-            printf("This is iteration %d.\n", j);
+
+            printf("This is iteration %d\n", j);
+
 
             /// ***********************************************************
             /// **** STEP 5: Reduce
@@ -931,13 +1446,29 @@ namespace IterativeSMOS {
                                  numUniqueBuckets * sizeof(unsigned int), cudaMemcpyHostToDevice));
 
             reindexCounts<<<(int) ceil((float)numUniqueBuckets/threadsPerBlock), threadsPerBlock>>>
-                            (d_bucketCount, numBuckets, numBlocks, d_reindexCounter, d_uniqueBuckets, numUniqueBuckets);
+                    (d_bucketCount, numBuckets, numBlocks, d_reindexCounter, d_uniqueBuckets, numUniqueBuckets);
+
+            SAFEcuda("STEP 5.1, after reindexCounts\n");
 
             copyElements_iterative<T><<<numBlocks, threadsPerBlock, numUniqueBuckets * sizeof(unsigned int)>>>
-                                (d_vector, d_newvector, lengthOld, d_elementToBucket, d_uniqueBuckets, numUniqueBuckets,
-                                 d_bucketCount, numBuckets, offset);
+            (d_vector, d_newvector, lengthOld, d_elementToBucket, d_uniqueBuckets, numUniqueBuckets,
+                    d_bucketCount, numBuckets, offset);
+
+            SAFEcuda("STEP 5.1, after copyElements\n");
 
             swapPointers(&d_vector, &d_newvector);
+
+            SAFEcuda("STEP 5.1, after swapPointers\n");
+
+
+
+            /*
+            //display information
+            printf("numKs: %d, length: %d, numUniqueBuckets: %d, tempKorderLength: %d\n", numKs, length, numUniqueBuckets, tempKorderLength);
+            printf("lengthOld: %d, numUniqueBucketsOld: %d\n", lengthOld, numUniqueBucketsOld);
+             */
+
+
 
 
 
@@ -954,11 +1485,15 @@ namespace IterativeSMOS {
 
             // potential to fix how many blocks to assign
             updatePivots_iterative<T><<<numBlocks, threadsPerBlock>>>(d_pivotsLeft, d_newPivotsLeft, d_newPivotsRight,
-                                                                   d_slopes, d_kthnumBuckets, d_uniqueBuckets,
-                                                                   numUniqueBuckets, numUniqueBucketsOld, offset);
+                    d_slopes, d_kthnumBuckets, d_uniqueBuckets,
+                    numUniqueBuckets, numUniqueBucketsOld, offset);
+
+            SAFEcuda("STEP 5.2, after updatePivots\n");
 
             swapPointers(&d_pivotsLeft, &d_newPivotsLeft);
             swapPointers(&d_pivotsRight, &d_newPivotsRight);
+
+            SAFEcuda("STEP 5.2, after swapPointers\n");
 
 
             /// ***********************************************************
@@ -973,8 +1508,10 @@ namespace IterativeSMOS {
 
             // potential to fix how many blocks to assign
             generateBucketsandSlopes_iterative<<<numBlocks, threadsPerBlock>>>
-                                                 (d_pivotsLeft, d_pivotsRight, d_slopes, d_uniqueBucketCounts,
-                                                  numUniqueBuckets, d_kthnumBuckets, length, offset, numBuckets);
+                    (d_pivotsLeft, d_pivotsRight, d_slopes, d_uniqueBucketCounts,
+                     numUniqueBuckets, d_kthnumBuckets, length, offset, numBuckets);
+
+            SAFEcuda("STEP 5.3, after generateBucketandSlopes\n");
 
             CUDA_CALL(cudaMemcpy(slopes, d_slopes, numUniqueBuckets * sizeof(double),
                                  cudaMemcpyDeviceToHost));
@@ -982,7 +1519,7 @@ namespace IterativeSMOS {
             // make any slopes that were infinity due to division by zero (due to no
             //  difference between the two associated pivots) into zero, so all the
             //  values which use that slope are projected into a single bucket
-            for (register int i = 0; i < numUniqueBuckets; i++)
+            for (int i = 0; i < numUniqueBuckets; i++)
                 if (isinf(slopes[i]))
                     slopes[i] = 0;
 
@@ -990,17 +1527,121 @@ namespace IterativeSMOS {
                                  cudaMemcpyHostToDevice));
 
 
+
+
+            /*
+            //display information
+            if (j < 4) {
+                cudaMemcpy(pivotsLeft, d_pivotsLeft, numUniqueBuckets * sizeof(int), cudaMemcpyDeviceToHost);
+                cudaMemcpy(pivotsRight, d_pivotsRight, numUniqueBuckets * sizeof(int), cudaMemcpyDeviceToHost);
+                printf("PivotsLeft: \n");
+                for (int i = 0; i < numUniqueBuckets; i++)
+                    printf("%d, ", pivotsLeft[i]);
+                printf("\n");
+This is iteration 6
+
+                printf("PivotsRight: \n");
+                for (int i = 0; i < numUniqueBuckets; i++)
+                    printf("%d, ", pivotsRight[i]);
+                printf("\n");
+                printf("\n");
+            }
+
+
+
+            //display information
+            if (j < 4) {
+                cudaMemcpy(slopes, d_slopes, numUniqueBuckets * sizeof(double), cudaMemcpyDeviceToHost);
+                cudaMemcpy(kthnumBuckets, d_kthnumBuckets, numUniqueBuckets * sizeof(unsigned int), cudaMemcpyDeviceToHost);
+                printf("slopes: \n");
+                for (int i = 0; i < numUniqueBuckets; i++)
+                    printf("%lf, ", slopes[i]);
+                printf("\n");
+                printf("kthnumBuckets: \n");
+                for (int i = 0; i < numUniqueBuckets; i++)
+                    printf("%d, ", kthnumBuckets[i]);
+                printf("\n");
+                printf("\n");
+            }
+
+            printf("length: %d, numUniqueBuckets: %d\n", length, numUniqueBuckets);
+
+
+            //display information
+            if (j == 0) {
+                int * h_vector = (int*)malloc(length * sizeof(int));
+                cudaMemcpy(h_vector, d_vector, length * sizeof(int), cudaMemcpyDeviceToHost);
+                printf("display vector\n");
+                for (int i = 0; i < length; i++)
+                    printf("%d, ", h_vector[i]);
+                printf("\n");
+                printf("\n");
+            }
+             */
+
+
+
+
+
             /// ***********************************************************
             /// **** STEP 5: Reduce
             /// **** Step 5.4: assign buckets
             /// **** assign elements to correct buckets in iteration
             /// ***********************************************************
+
+
+
+
+
             assignSmartBucket_iterative<T><<<numBlocks, threadsPerBlock, numUniqueBuckets * sizeof(T) +
                                                                          numUniqueBuckets * sizeof(double) +
                                                                          numUniqueBuckets * sizeof(unsigned int) +
                                                                          numBuckets * sizeof(unsigned int)>>>
-                    (d_vector, length, d_elementToBucket, d_slopes, d_pivotsLeft, d_pivotsRight, d_kthnumBuckets,
-                     d_bucketCount, numUniqueBuckets, numBuckets, offset);
+            (d_vector, length, d_elementToBucket, d_slopes, d_pivotsLeft, d_pivotsRight, d_kthnumBuckets,
+                    d_bucketCount, numUniqueBuckets, numBuckets, offset);
+
+
+
+            SAFEcuda("STEP 5.4, after assignSmartBucket\n");
+
+
+
+
+            /*
+            //display information
+            //if (j == 0 || j == 1) {
+            if (j == 0) {
+                int * h_vector = (int*)malloc(length * sizeof(int));
+                cudaMemcpy(h_vector, d_vector, length * sizeof(int), cudaMemcpyDeviceToHost);
+                unsigned int * h_elementToBucket = (unsigned int*)malloc(length * sizeof(unsigned int));
+                cudaMemcpy(h_elementToBucket, d_elementToBucket, length * sizeof(unsigned int), cudaMemcpyDeviceToHost);
+                printf("display vector and element to bucket\n");
+                for (int i = 0; i < length; i++)
+                    printf("%d, %d;   ", h_vector[i], h_elementToBucket[i]);
+                printf("\n");
+                printf("\n");
+            }
+             */
+
+
+
+            SAFEcuda("STEP 5.4, after prnt evrything\n");
+
+            /*
+            //display information
+            if (j == 1) {
+                unsigned int * h_elementToBucket = (unsigned int*)malloc(length * sizeof(unsigned int));
+                cudaMemcpy(h_elementToBucket, d_elementToBucket, length * sizeof(unsigned int), cudaMemcpyDeviceToHost);
+                printf("display elementToBucket\n");
+                for (int i = 0; i < length; i++)
+                    printf("%d, ", h_elementToBucket[i]);
+                printf("\n");
+                printf("\n");
+            }
+             */
+
+
+
 
 
             /// ***********************************************************
@@ -1011,11 +1652,74 @@ namespace IterativeSMOS {
 
             sumCounts<<<numBuckets/threadsPerBlock, threadsPerBlock>>>(d_bucketCount, numBuckets, numBlocks);
 
+            SAFEcuda("STEP 5.5, after sumCounts\n");
+
             findKBuckets(d_bucketCount, h_bucketCount, numBuckets, kVals, numKs, kthBucketScanner, kthBuckets, numBlocks);
+
+            SAFEcuda("STEP 5.5, after findKBuckets\n");
+
+
+
+            /*
+            //display information
+            if (j < 4) {
+                printf("numKs: %d\n", numKs);
+                //for (int i = 0; i < numBuckets; i++)
+                //  printf("%d, ", h_bucketCount[i]);
+                //printf("\n");
+                printf("kthBuckets: \n");
+                for (int i = 0; i < numKs; i++)
+                    printf("%d, ", kthBuckets[i]);
+                printf("\n");
+                printf("kthBucketsScanner: \n");
+                for (int i = 0; i < numKs; i++)
+                    printf("%d, ", kthBucketScanner[i]);
+                printf("\n");
+                printf("\n");
+            }
+             */
+
+
+
+
+
 
             updatekVals_iterative<T>(kVals, &numKs, output, kIndices, &length, &lengthOld, h_bucketCount, kthBuckets, kthBucketScanner,
                                      reindexCounter, uniqueBuckets, uniqueBucketCounts, &numUniqueBuckets, &numUniqueBucketsOld,
                                      tempKorderBucket, tempKorderIndeces, &tempKorderLength);
+
+            SAFEcuda("STEP 5.5, after updateKVals\n");
+
+
+
+
+            /*
+            //display information
+            if (j < 4) {
+                printf("numKs: %d, length: %d, numUniqueBuckets: %d, tempKorderLength: %d\n", numKs, length,
+                       numUniqueBuckets, tempKorderLength);
+                printf("uniqueBuckets:\n");
+                for (int i = 0; i < numUniqueBuckets; i++)
+                    printf("%d, ", uniqueBuckets[i]);
+                printf("\n");
+                printf("uniqueBucketCounts:\n");
+                for (int i = 0; i < numUniqueBuckets; i++)
+                    printf("%d, ", uniqueBucketCounts[i]);
+                printf("\n");
+                printf("reindexCounter:\n");
+                for (int i = 0; i < numUniqueBuckets; i++)
+                    printf("%d, ", reindexCounter[i]);
+                printf("\n");
+                printf("kVals:\n");
+                for (int i = 0; i < numKs; i++)
+                    printf("%d, ", kVals[i]);
+                printf("\n");
+                printf("\n");
+            }
+             */
+
+
+
 
             if (tempKorderLength > 0) {
                 CUDA_CALL(cudaMemcpy(d_tempKorderBucket, tempKorderBucket, tempKorderLength * sizeof(unsigned int),
@@ -1027,6 +1731,8 @@ namespace IterativeSMOS {
                 updateOutput_iterative<<<numBlocks, threadsPerBlock>>>(d_vector, d_elementToBucket, lengthOld, d_tempOutput,
                                                                        d_tempKorderBucket, tempKorderLength, offset);
 
+                SAFEcuda("STEP 5.5, after updateOutput\n");
+
                 CUDA_CALL(cudaMemcpy(tempOutput, d_tempOutput, tempKorderLength * sizeof(T),
                                      cudaMemcpyDeviceToHost));
 
@@ -1035,23 +1741,61 @@ namespace IterativeSMOS {
 
             }
 
-            if (numKs <= 0)
-                return 0;
 
+
+            /*
+            //display information
+            if (j < 4) {
+                printf("tempKorderIndeces: \n");
+                for (int i = 0; i < tempKorderLength; i++)
+                    printf("%d, ", tempKorderIndeces[i]);
+                printf("\n");
+                printf("tempOutput: \n");
+                for (int i = 0; i < tempKorderLength; i++)
+                    printf("%d, ", tempOutput[i]);
+                printf("\n");
+                printf("\n");
+            }
+
+            //display information
+            if (j < 4) {
+                printf("LeftKorderIndeces: \n");
+                for (int i = 0; i < numKs; i++)
+                    printf("%d, ", kIndices[i]);
+                printf("\n");
+                printf("LeftKorder: \n");
+                for (int i = 0; i < numKs; i++)
+                    printf("%d, ", kVals[i]);
+                printf("\n");
+                printf("\n");
+            }
+             */
+
+
+            if (length == lengthOld)
+                break;
+
+            // display information
+            printf("Done iteration %d\n\n", j);
         }
 
 
-        CUDA_CALL(cudaMemcpy(d_kthBuckets, kthBuckets, numKs * sizeof(unsigned int),
-                             cudaMemcpyHostToDevice));
+        if (numKs > 0) {
+            CUDA_CALL(cudaMemcpy(d_kthBuckets, kthBuckets, numKs * sizeof(unsigned int),
+                                 cudaMemcpyHostToDevice));
 
-        updateOutput_iterative<<<numBlocks, threadsPerBlock>>>(d_vector, d_elementToBucket, lengthOld, d_tempOutput,
-                                                               d_kthBuckets, numKs, offset);
+            updateOutput_iterative<<<numBlocks, threadsPerBlock>>>(d_vector, d_elementToBucket, lengthOld, d_tempOutput,
+                                                                   d_kthBuckets, numKs, offset);
 
-        CUDA_CALL(cudaMemcpy(tempOutput, d_tempOutput, numKs * sizeof(T),
-                             cudaMemcpyDeviceToHost));
+            SAFEcuda("Exit Iteration, after updateOutput\n");
 
-        for (int i = 0; i < numKs; i++)
-            output[kIndices[i]] = tempOutput[i];
+            CUDA_CALL(cudaMemcpy(tempOutput, d_tempOutput, numKs * sizeof(T),
+                                 cudaMemcpyDeviceToHost));
+
+            for (int i = 0; i < numKs; i++)
+                output[kIndices[i]] = tempOutput[i];
+        }
+
 
         /*
         int * h_vector = (int *)malloc(length * sizeof(int));
@@ -1063,49 +1807,52 @@ namespace IterativeSMOS {
         printf("\n");
          */
 
-	free(slopes);
-	free(pivots);
-	free(pivotsLeft);
-	free(pivotsRight);
-	free(newPivotsLeft);
-	free(newPivotsRight);
-	free(h_bucketCount);
-	free(kthBuckets);
-	free(kthBucketScanner);
-	free(kIndices);
-	free(uniqueBuckets);
-	free(uniqueBucketCounts);
-	free(reindexCounter);
-	free(kthnumBuckets);
-	free(tempOutput);
-	free(tempKorderBucket);
-	free(tempKorderIndeces);
+        free(slopes);
+        free(pivots);
+        free(pivotsLeft);
+        free(pivotsRight);
+        free(newPivotsLeft);
+        free(newPivotsRight);
+        free(h_bucketCount);
+        free(kthBuckets);
+        free(kthBucketScanner);
+        free(kIndices);
+        free(uniqueBuckets);
+        free(uniqueBucketCounts);
+        free(reindexCounter);
+        free(kthnumBuckets);
+        free(tempOutput);
+        free(tempKorderBucket);
+        free(tempKorderIndeces);
 
 
-	cudaFree(d_slopes);
-	cudaFree(d_pivots);
-	cudaFree(d_pivotsLeft);
-	cudaFree(d_pivotsRight);
-	cudaFree(d_newPivotsLeft);
-	cudaFree(d_newPivotsRight);
-	cudaFree(d_elementToBucket);
-	cudaFree(d_bucketCount);
-	cudaFree(d_newvector);
-	cudaFree(d_kVals);
-	cudaFree(d_kthBuckets);
-	cudaFree(d_kthBucketScanner);
-	cudaFree(d_kIndices);
-	cudaFree(d_uniqueBuckets);
-	cudaFree(d_uniqueBucketCounts);
-	cudaFree(d_reindexCounter);
-	cudaFree(d_kthnumBuckets);
-	cudaFree(d_tempOutput);
-	cudaFree(d_tempKorderBucket);
-	cudaFree(d_tempKorderIndeces);
+        cudaFree(d_slopes);
+        cudaFree(d_pivots);
+        cudaFree(d_pivotsLeft);
+        cudaFree(d_pivotsRight);
+        cudaFree(d_newPivotsLeft);
+        cudaFree(d_newPivotsRight);
+        cudaFree(d_elementToBucket);
+        cudaFree(d_bucketCount);
+        cudaFree(addressOfd_newvector);
+        cudaFree(d_kVals);
+        cudaFree(d_kthBuckets);
+        cudaFree(d_kthBucketScanner);
+        cudaFree(d_kIndices);
+        cudaFree(d_uniqueBuckets);
+        cudaFree(d_uniqueBucketCounts);
+        cudaFree(d_reindexCounter);
+        cudaFree(d_kthnumBuckets);
+        cudaFree(d_tempOutput);
+        cudaFree(d_tempKorderBucket);
+        cudaFree(d_tempKorderIndeces);
+
+        SAFEcuda("Exit Iteration, after free\n");
+
 
         return 0;
     }
-
+    
     template <typename T>
     T iterativeSMOSWrapper (T * d_vector, int length, uint * kVals_ori, int numKs
                               , T * outputs, int blocks, int threads) {
@@ -1126,11 +1873,14 @@ namespace IterativeSMOS {
 
 }
 
+int cmpfunc (const void * a, const void * b) {
+    return ( *(int*)a - *(int*)b );
+}
+
 
 /*
 int main() {
-
-
+*/
 
     /*
     // Test for generatePivots_iterative
@@ -1497,50 +2247,227 @@ int main() {
 
 
     /*
-    // test for iterativeSMOS
-    int threadsPerBlock = 1024;
+    // test for assignSmartBucket_iterative
+    int length = 60;
+    int numUniqueBuckets = 30;
+    int numBuckets = 8192;
     int numBlocks = 10;
+    int threadsPerBlock = 1024;
+    int offset = numBlocks * threadsPerBlock;
+    int * h_vector = (int*)malloc(length * sizeof(int));
+     */
+
+
+
+    /*
+    // test for iterativeSMOS, Single Tests
+    int threadsPerBlock = 1024;
+    int numBlocks = 12;
     int numTotalBuckets = 8192;
     int offset = threadsPerBlock * numBlocks;
-    int length = 100000;
     int numBuckets = 8192;
 
-    int h_vector[100000];
-    for (int i = 0; i < 50000; i++) {
-        h_vector[i] = i * 2;
-        h_vector[i+50000] = i * 2;
+    int length = 1048576;
+    int * h_vector = (int*)malloc(length * sizeof(int));
+    for (int i = 0; i < length; i++) {
+        h_vector[i] = i + 1;
     }
     int * d_vector;
-    cudaMalloc(&d_vector, 100000 * sizeof(int));
-    cudaMemcpy(d_vector, h_vector, 100000 * sizeof(int), cudaMemcpyHostToDevice);
+    cudaMalloc(&d_vector, length * sizeof(int));
+    cudaMemcpy(d_vector, h_vector, length * sizeof(int), cudaMemcpyHostToDevice);
 
-    unsigned int kVals[10] = {10, 1000, 10000, 40000, 50000, 60000, 70000, 80000, 90000, 5000};
-    int numKs = 10;
-
-    int * output = (int*)malloc(10 * sizeof(int));
-
-    for (int i = 0; i < 10; i++) {
-        output[i] = 0;
+    unsigned int numKs = 270;
+    unsigned int *kVals = (unsigned int *) malloc(numKs * sizeof(unsigned int));
+    for (int i = 0; i < numKs; i++) {
+        kVals[i] = i * 100 + 1;
     }
 
-    IterativeSMOS::iterativeSMOS(d_vector, length,kVals, numKs, output, numBlocks, threadsPerBlock, numTotalBuckets, 17);
 
-    for (int i = 0; i < 10; i++) {
-        printf("%d   ", output[i]);
+    int *output = (int *) malloc(numKs * sizeof(int));
+
+    for (int i = 0; i < numKs; i++) {
+        output[i] = -1;
     }
-    
+
+    IterativeSMOS::iterativeSMOS(d_vector, length, kVals, numKs, output, numBlocks, threadsPerBlock,
+                                 numTotalBuckets, 17);
+
+
+    for (int i = 0; i < numKs; i++){
+        if (output[i] != i * 100 + 1)
+        	printf("%d  ", output[i]);
+    }
+
+
+    free(kVals);
+    free(output);
+    free(h_vector);
+    cudaFree(d_vector);
+    */
+     
+
+
+    /*
+    // test for iterativeSMOS, Sets of Testing, ints
+    int threadsPerBlock = 1024;
+    int numBlocks = 12;
+    int numTotalBuckets = 8192;
+    int offset = threadsPerBlock * numBlocks;
+    int numBuckets = 8192;
+
+    int length = 400000;
+    int * h_vector = (int*)malloc(length * sizeof(int));
+    for (int i = 0; i < length; i++) {
+        h_vector[i] = i + 1;
+    }
+
+
+    for (int numOfK = 10; numOfK < 1010; numOfK += 10) {
+        int * d_vector;
+        cudaMalloc(&d_vector, length * sizeof(int));
+        cudaMemcpy(d_vector, h_vector, length * sizeof(int), cudaMemcpyHostToDevice);
+        printf("\n\n\n-------------NUM OF K: %d--------------\n\n", numOfK);
+        unsigned int numKs = numOfK;
+        unsigned int *kVals = (unsigned int *) malloc(numKs * sizeof(unsigned int));
+        for (int i = 0; i < numKs; i++) {
+            kVals[i] = i * 100 + 1;
+        }
+
+
+        int *output = (int *) malloc(numKs * sizeof(int));
+
+        for (int i = 0; i < numKs; i++) {
+            output[i] = -1;
+        }
+
+        IterativeSMOS::iterativeSMOS(d_vector, length, kVals, numKs, output, numBlocks, threadsPerBlock,
+                                     numTotalBuckets, 17);
+
+
+        for (int i = 0; i < numKs; i++) {
+            if (output[i] != i * 100 + 1)
+                printf("WRONG OUTPUT: Order: %d; Output: %d\n", i * 100 + 1, output[i]);
+        }
+
+        free(kVals);
+        free(output);
+        cudaFree(d_vector);
+    }
+
+    free(h_vector);\
+    */
 
 
 
+/*
+    // test for iterativeSMOS, set of tests, floats
+    int threadsPerBlock = 1024;
+    int numBlocks = 12; // figure out how to query the system and dp.XXX using cudaGetDeviceProperties
+    int numTotalBuckets = 8192;
+//    int offset = threadsPerBlock * numBlocks;
+//    int numBuckets = 8192;
+
+    int length = 524288;
+    float * h_vector = (float*)malloc(length * sizeof(float));
+    for (int i = 0; i < length; i++) {
+        h_vector[i] = (float)(rand()/(float)RAND_MAX);
+        // printf("\nh_vec[%d]=%f",i,h_vector[i]);
+    }
+
+    qsort(h_vector, length, sizeof(float), cmpfunc);
+    */
+
+
+    /*
+    for (int i = 0; i < length; i++) {
+        printf("\nh_vec[%d]=%f",i,h_vector[i]);
+    }
+     */
+
+/*    unsigned int * h_vector = (unsigned int*)malloc(length * sizeof(unsigned int));
+    for (int i = 0; i < length; i++) {
+        h_vector[i] = i + 1;
+    }
+
+    unsigned int * d_vector;
+    cudaMalloc(&d_vector, length * sizeof(unsigned int));
+    cudaMemcpy(d_vector, h_vector, length * sizeof(unsigned int), cudaMemcpyHostToDevice);
+    */
+
+
+/*
+    for (int ksize=10; ksize<1000; ksize+=10) {
+        float * d_vector;
+        cudaMalloc(&d_vector, length * sizeof(float));
+        cudaMemcpy(d_vector, h_vector, length * sizeof(float), cudaMemcpyHostToDevice);
+        // printf("\n \n kVals:\n");
+        unsigned int numKs = (unsigned int) ksize;
+        unsigned int * kVals = (unsigned int *)malloc(numKs * sizeof(unsigned int));
+        unsigned int * oldkVals = (unsigned int *)malloc(numKs * sizeof(unsigned int));
+        unsigned int notready;
+
+
+        printf("\n\n\n\n\n\n ############################################################################# \n\n New prblm with numKs = %d.\n\n", numKs);
+
+
+        for (int i = 0; i < numKs; i++) {
+            notready = 1;
+            while (notready) {
+                kVals[i] = rand() % length + 1; //i*2+1; // * 100 + 1;
+                notready = 0;
+                if (i>0) {
+                    for (int ii=0; ii<i; ii++){
+                        notready += (kVals[ii]==kVals[i]);
+                    }  // ends for ii
+                } // ends if i>0
+            } // ends while notready
+            // printf("%d  ", kVals[i]);
+            oldkVals[i]=kVals[i];
+        }
+
+        float * output = (float*)malloc(numKs * sizeof(float));
+//         unsigned int * output = (unsigned int*)malloc(numKs * sizeof(unsigned int));
+
+        for (int i = 0; i < numKs; i++) {
+            output[i] = 0;
+        }
+
+        IterativeSMOS::iterativeSMOS(d_vector, length ,kVals, numKs, output, numBlocks, threadsPerBlock, numTotalBuckets, 17);
+        */
+
+
+        /*
+        for (int i = 0; i < numKs; i++) {
+//             std::cout << output[i] ;
+//             printf("%d   ", output[i]);
+            printf("%f   ", output[i]);
+        }
+         */
+
+/*
+        printf("\n");
+        int numwrong = 0;
+        for (int i = 0; i < numKs; i++) {
+            // printf("\nkVals[%d]=%d,  ", i, oldkVals[i]);
+            if (h_vector[oldkVals[i]-1] != output[i]) {
+                printf("\n WRONG For i=%d, hvec=%f and out=%f  ", i, h_vector[oldkVals[i] - 1], output[i]);
+                numwrong++;
+            }
+        }
+        if (numwrong > 0)
+            printf("It got %d wrong.", numwrong);
+        free(kVals);
+        free(oldkVals);
+        free(output);
+        cudaFree(d_vector);
+    }
+
+    free(h_vector);
+    */
+
+
+/*
 
     return 0;
-   
 }
 */
-
-
-
-
-
-
-
